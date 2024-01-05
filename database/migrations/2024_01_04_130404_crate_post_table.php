@@ -14,6 +14,9 @@ return new class extends Migration
         Schema::create('posts', function (Blueprint $table) {
             $table->id();
             $table->string('temat');
+            $table->foreignId('user_id')
+                ->constrained('users') 
+                ->onDelete('no action');
             $table->rememberToken();
             $table->timestamps();
         });

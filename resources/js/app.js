@@ -9,4 +9,8 @@ Alpine.start();
 
 import '@fortawesome/fontawesome-free/css/solid.css';
 
-window.$ = window.jQuery = require('jquery');
+
+import '@fortawesome/fontawesome-free/js/solid';
+import '@fortawesome/fontawesome-free/js/regular';
+import '@fortawesome/fontawesome-free/js/brands';
+import '@fortawesome/fontawesome-free/js/fontawesome';
