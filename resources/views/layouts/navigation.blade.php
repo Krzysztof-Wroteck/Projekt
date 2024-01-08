@@ -22,6 +22,9 @@
                     <x-nav-link href="{{ route('posts.index') }}" >
                       Posty
 </x-nav-link>
+<x-nav-link href="{{ route('users.posts') }}" >
+                      Twój Profil
+</x-nav-link>
                 </div>
             </div>
 

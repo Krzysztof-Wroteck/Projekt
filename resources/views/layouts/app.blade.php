@@ -18,6 +18,9 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/v4-shims.min.css" integrity="sha384-c5RBEFOZR5X0LLgGphtdGDNyLm52l9z2jrFJ018fHj5KcTbEMNp2jnvH4NUXcJgJ" crossorigin="anonymous">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/v4-shims.min.css" integrity="sha384-c5RBEFOZR5X0LLgGphtdGDNyLm52l9z2jrFJ018fHj5KcTbEMNp2jnvH4NUXcJgJ" crossorigin="anonymous">
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+             <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+        
 
     </head>
     <body class="font-sans antialiased">
@@ -37,6 +40,15 @@
             <main>
                 {{ $slot }}
                 @yield('content')
+                @yield('javascript')
+                @yield('js-files')
+              
+                <script type="text/javascript">
+             @yield('javascript')
+
+    </script>
+             
+
             </main>
         </div>
     </body>
