@@ -17,7 +17,7 @@
                 <div class="mb-4">
                     <label for="image" class="block text-gray-700 text-sm font-bold mb-2">Załaduj plik:</label>
                     <input type="file" name="image" class="form-input border rounded-md p-2 w-full" accept="image/*,video/*">
-                    <small class="text-gray-500">Akceptowane formaty: obraz (jpeg, png, jpg, gif) lub video (mp4)</small>
+                    <small class="text-gray-500">Akceptowane formaty: obraz (jpeg, png, jpg, gif)</small>
                 </div>
 
                 <div class="mb-4">

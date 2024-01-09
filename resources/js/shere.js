@@ -2,6 +2,7 @@ $(function () {
     $('.shere').on('click', function (e) {
         e.preventDefault();
         const postId = $(this).data('id');
+        const $button = $(this);
 
         $.ajax({
             method: 'POST',
@@ -11,12 +12,14 @@ $(function () {
             },
         }).done(function (data) {
             if (data.action === 'shared') {
-                $(e.target).addClass('shared');
+                $button.addClass('shared');
+                $button.find('.fa').removeClass('fa-regular').addClass('fa-solid');
             } else {
-                $(e.target).removeClass('shared');
+                $button.removeClass('shared');
+                $button.find('.fa').removeClass('fa-solid').addClass('fa-regular');
             }
 
-            $(e.target).find('.shere-count').text(data.sheresCount);
+            $button.find('.shere-count').text(data.sheresCount);
         }).fail(function (data) {
             console.error(data);
         });

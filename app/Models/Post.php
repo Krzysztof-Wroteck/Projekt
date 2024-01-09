@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 
 class Post extends Model
@@ -45,6 +46,8 @@ class Post extends Model
         return $this->hasMany(Share::class);
     }
 
+
+    
     
     public function sheresCount(): int
     {
@@ -52,9 +55,10 @@ class Post extends Model
     }
 
 
-
-
-
+    public function comments()
+    {
+        return $this->hasMany(Comment::class);
+    }
 
 
 

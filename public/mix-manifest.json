@@ -1,3 +1,5 @@
 {
-    "/js/app.js": "/js/app.js"
+    "/js/app.js": "/js/app.js",
+    "/js/delete.js": "/js/delete.js",
+    "/js/shere.js": "/js/shere.js"
 }

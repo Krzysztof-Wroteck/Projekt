@@ -4,6 +4,7 @@ use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\CommentController;
 
 /*
 |--------------------------------------------------------------------------
@@ -41,8 +42,17 @@ Route::middleware('auth')->group(function () {
     Route::put('/posts/{post}', [PostController::class, 'update'])->name('posts.update');
     Route::delete('/posts/list/{post}', [PostController::class, 'destroy'])->name('posts.destroy');
 
-    Route::get('/users/posts', [UserController::class, 'usersPosts'])->name('users.posts');
-    Route::get('/users/{user}/posts', [UserController::class, 'showPosts'])->name('users.odposts');
+    Route::get('/posts/{post}/comments', [CommentController::class, 'index'])->name('comments.index');
+    Route::post('/posts/{post}/comments', [CommentController::class, 'store'])->name('posts.comments.store');    
+    Route::get('/posts/comments/{post}', [CommentPageController::class, 'show'])->name('comments.page');
+
+
+    Route::get('/users/{user}/posts', [UserController::class, 'usersPosts'])->name('users.posts');
+    Route::get('/users/{user}/showProfil', [UserController::class, 'showProfil'])->name('users.showProfil');
+    Route::post('/users/{user}/follow', [UserController::class, 'follow'])->name('users.follow');
+    Route::post('/users/{user}/unfollow', [UserController::class, 'unfollow'])->name('users.unfollow');
+
+
 
 });
 require __DIR__.'/auth.php';

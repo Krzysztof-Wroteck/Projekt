@@ -13,14 +13,48 @@ use Illuminate\Http\Request;
 use Illuminate\View\View;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
+use Illuminate\Support\Facades\DB;
 
 class PostController extends Controller
 {
-    public function index(): View
+    public function index(Request $request)
     {
-        $posts = Post::all();
+        $query = $request->input('query');
+    
+        if (!empty($query)) {
+            $posts = Post::where(function($queryBuilder) use ($query) {
+                if (Str::startsWith($query, '#')) {
+                    $query = Str::after($query, '#');
+                    
+                    $queryBuilder->whereHas('user', function($q) use ($query) {
+                        $q->whereRaw("BINARY name LIKE ?", ['%' . $query . '%']);
+                    })
+                    ->orWhere(function($q) use ($query) {
+                        $q->whereRaw("BINARY temat LIKE ?", ['%' . $query . '%']);
+                    });
+                } else {
+                    $queryBuilder->where('Temat', 'LIKE BINARY', '%' . $query . '%')
+                        ->orWhereHas('user', function($q) use ($query) {
+                            $q->whereRaw("BINARY name LIKE ?", ['%' . $query . '%']);
+                        });
+                }
+            })
+            ->orderBy('created_at', 'desc')
+            ->get();
+    
+            if ($posts->isEmpty()) {
+                $posts = Post::orderBy('created_at', 'desc')->get();
+            }
+        } else {
+            $posts = Post::orderBy('created_at', 'desc')->get();
+        }
+    
         return view('posts.index', compact('posts'));
     }
+    
+
+    
 
     public function create(): View
     {
@@ -44,7 +78,7 @@ public function update(Request $request, Post $post)
 {
     $request->validate([
         'Temat' => 'required|string',
-        'image' => 'image|mimes:jpeg,png,jpg,gif,mp4|max:2048',
+        'image' => 'image|mimes:jpeg,png,jpg,gif|max:2048',
     ]);
 
     $post->update([
@@ -52,17 +86,20 @@ public function update(Request $request, Post $post)
     ]);
 
     if ($request->has('remove_image') && $request->input('remove_image') == 'on') {
-        Storage::disk('public')->delete($post->image_path);
+        if ($post->image_path) {
+            Storage::disk('public')->delete($post->image_path);
+        }
         $post->update(['image_path' => null]);
     } elseif ($request->hasFile('image')) {
+        if ($post->image_path) {
+            Storage::disk('public')->delete($post->image_path);
+        }
         $imagePath = $request->file('image')->store('images', 'public');
-        Storage::disk('public')->delete($post->image_path); 
         $post->update(['image_path' => $imagePath]);
     }
 
-    return redirect()->route('posts.index')->with('success', 'Post został pomyślnie zaktualizowany.');
+    return redirect()->back()->with('success', 'Post został pomyślnie zaktualizowany.');
 }
-
 
     
 
@@ -106,7 +143,7 @@ public function update(Request $request, Post $post)
 
     $likesCount = Post::find($postId)->likesCount();
 
-    return redirect()->route('posts.index')->with('success', 'Like został pomyślnie dodany.');
+    return back()->with('success', 'Post został pomyślnie zaktualizowany.');
 
 
 }

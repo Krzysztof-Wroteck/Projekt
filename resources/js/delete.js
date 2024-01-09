@@ -20,7 +20,7 @@ $(document).ready(function() {
             if (result.isConfirmed) {
                 $.ajax({
                     method: "DELETE",
-                    url: deleteUrl + postId,
+                    url: 'http://127.0.0.1:8000/posts/list/' + postId, 
                     headers: {
                         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                     },

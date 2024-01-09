@@ -6,29 +6,56 @@ use App\Models\User;
 use App\Models\Post;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
+use Illuminate\Routing\Redirector;
+
+use Illuminate\Http\RedirectResponse;
 
 class UserController extends Controller
 {
-    public function usersPosts()
-    {
-        $user = Auth::user();
-        $posts = Post::where('user_id', $user->id)
+    public function usersPosts(User $user)
+{
+    $followingIds = $user->following->pluck('id')->merge([$user->id]);
+
+    $posts = Post::whereIn('user_id', $followingIds)
         ->orWhereHas('sheres', function ($query) use ($user) {
-           $query->where('user_id', $user->id);
+            $query->where('user_id', $user->id);
         })
+        ->orderBy('created_at', 'desc')
         ->get();
 
-        return view('users.posts', compact('posts'));
-    }
+    return view('users.posts', compact('user', 'posts'));
+}
 
+public function showProfil(User $user)
+{
+    $followingIds = $user->following->pluck('id')->merge([$user->id]);
 
+    $posts = Post::whereIn('user_id', $followingIds)
+        ->orWhereHas('sheres', function ($query) use ($user) {
+            $query->where('user_id', $user->id);
+        })
+        ->orderBy('created_at', 'desc')
+        ->get();
+
+    return view('users.showProfil', compact('user', 'posts'));
+}
     
-
-
-    public function showPosts(User $user)
+    public function follow(User $user): RedirectResponse
     {
-        $posts = $user->posts; 
-
-        return view('users.posts', compact('user', 'posts'));
+        Auth::user()->following()->toggle($user);
+    
+        return redirect()->route('users.showProfil', ['user' => $user])->with('success', 'Obserwacja została pomyślnie dodana.');
     }
+    
+    public function unfollow(User $user): RedirectResponse
+    {
+        Auth::user()->following()->toggle($user);
+    
+        return redirect()->route('users.showProfil', ['user' => $user])->with('success', 'Obserwacja została pomyślnie usunięta.');
+    }
+
+
+
+
+
 }
