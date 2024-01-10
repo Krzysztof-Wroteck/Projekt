@@ -45,6 +45,7 @@
               
                 <script type="text/javascript">
              @yield('javascript')
+             @yield('js-files')
 
     </script>
              

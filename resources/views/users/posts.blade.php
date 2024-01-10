@@ -12,9 +12,8 @@
     <span class="text-gray-500">Obserowany przez: {{ $user->followers()->count() }}</span>
     <span class="text-gray-500">Obserwowani: {{ $user->following()->count() }}</span>
     <br>
-            
-        </div>
 
+        </div>
         <div class="flex items-center justify-center min-h-screen">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
                 <div class="flex items-center justify-between">
@@ -45,10 +44,14 @@
                                         Delete
                                     </button>
                                 </div>
-                                <div class="font-semibold text-lg text-gray-800 dark:text-gray-200"><x-nav-link :href="route('users.showProfil', ['user' => $post->user->id])">
-                       {{ $post->user->name }}
-                          </x-nav-link>
-                        </div>
+                                <div class="font-semibold text-lg text-gray-800 dark:text-gray-200">
+    <x-nav-link :href="route('users.showProfil', ['user' => $post->user->id])">
+        {{ $post->user->name }}
+        @if($post->created_at != $post->updated_at)
+            (edited)
+        @endif
+    </x-nav-link>
+</div>
                                 <div class="text-gray-700 dark:text-gray-300">{{ $post->temat }}</div>
 
                                 @if($post->image_path)
@@ -91,9 +94,11 @@
                                         </button>
                                     </form>
                                     <button class="flex items-center text-gray-600">
-                                        <i class="fa-regular fa-pen-to-square mr-1"></i>
-                                        Comment
-                                    </button>
+        <i class="fa-regular fa-pen-to-square mr-1"></i>
+        <a href="{{ route('comments.index', $post->id) }}" class="text-gray-600">{{ $post->comments()->count() }} Comment</a>
+    </button>
+
+   
                                 </div>
                             </div>
                         @endforeach
@@ -105,6 +110,7 @@
         </div>
     @endsection
 
+    
 
 
     @section('javascript')

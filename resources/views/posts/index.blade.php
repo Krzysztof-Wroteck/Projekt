@@ -39,11 +39,13 @@
                             </button>
                         </div>
                         <div class="font-semibold text-lg text-gray-800 dark:text-gray-200">
-
-                            <x-nav-link :href="route('users.showProfil', ['user' => $post->user->id])">
-                                {{ $post->user->name }}
-                            </x-nav-link>
-                        </div>
+    <x-nav-link :href="route('users.showProfil', ['user' => $post->user->id])">
+        {{ $post->user->name }}
+        @if($post->created_at != $post->updated_at)
+            (edited)
+        @endif
+    </x-nav-link>
+</div>
                         <div class="text-gray-700 dark:text-gray-300">{{ $post->temat }}</div>
 
                         @if($post->image_path)
@@ -87,12 +89,9 @@
                             </form>
     <button class="flex items-center text-gray-600">
         <i class="fa-regular fa-pen-to-square mr-1"></i>
-        <a href="{{ route('comments.index', $post->id) }}" class="text-gray-600">Comment</a>
+        <a href="{{ route('comments.index', $post->id) }}" class="text-gray-600">{{ $post->comments()->count() }} Comment</a>
     </button>
 
-    <span class="text-gray-600 ml-2">
-        {{ $post->comments()->count() }} 
-    </span>
 
                         </div>
                     </div>
@@ -102,7 +101,7 @@
     @endsection
 
     @section('javascript')
-        <script src="{{ asset('js/delete.js') }}"></script>
-        <script src="{{ asset('js/shere.js') }}"></script>
+        <script src="{{ asset('js/delete.js') }}">
+ 
     @endsection
 </x-app-layout>

@@ -23,21 +23,17 @@ class PostController extends Controller
         $query = $request->input('query');
     
         if (!empty($query)) {
-            $posts = Post::where(function($queryBuilder) use ($query) {
-                if (Str::startsWith($query, '#')) {
-                    $query = Str::after($query, '#');
-                    
-                    $queryBuilder->whereHas('user', function($q) use ($query) {
-                        $q->whereRaw("BINARY name LIKE ?", ['%' . $query . '%']);
-                    })
-                    ->orWhere(function($q) use ($query) {
-                        $q->whereRaw("BINARY temat LIKE ?", ['%' . $query . '%']);
+            $hashtags = explode('#', $query);
+            $hashtags = array_map('trim', $hashtags);
+            $hashtags = array_filter($hashtags);
+    
+            $posts = Post::where(function ($queryBuilder) use ($hashtags) {
+                foreach ($hashtags as $hashtag) {
+                    $queryBuilder->whereHas('user', function ($q) use ($hashtag) {
+                        $q->whereRaw("BINARY name LIKE ?", ['%' . $hashtag . '%']);
+                    })->orWhere(function ($q) use ($hashtag) {
+                        $q->whereRaw("BINARY Temat LIKE ?", ['%' . $hashtag . '%']);
                     });
-                } else {
-                    $queryBuilder->where('Temat', 'LIKE BINARY', '%' . $query . '%')
-                        ->orWhereHas('user', function($q) use ($query) {
-                            $q->whereRaw("BINARY name LIKE ?", ['%' . $query . '%']);
-                        });
                 }
             })
             ->orderBy('created_at', 'desc')
@@ -98,10 +94,8 @@ public function update(Request $request, Post $post)
         $post->update(['image_path' => $imagePath]);
     }
 
-    return redirect()->back()->with('success', 'Post został pomyślnie zaktualizowany.');
+    return redirect()->route('users.posts', ['user' => $post->user_id])->with('success', 'Post został pomyślnie zaktualizowany.');
 }
-
-    
 
     public function store(Request $request)
     {
@@ -182,9 +176,12 @@ public function destroy(Post $post): JsonResponse
         }
 
         $post->likes()->delete();
-
         $post->sheres()->delete();
-
+        $commentsWithLikes = $post->comments()->whereHas('likes')->get();
+        foreach ($commentsWithLikes as $comment) {
+            $comment->likes()->delete();
+        }
+        $post->comments()->delete();
         $post->delete();
 
         Session::flash('success', 'Udało się usunąć post.');
@@ -194,6 +191,10 @@ public function destroy(Post $post): JsonResponse
         ]);
     } catch (\Exception $e) {
         \Log::error($e);
+
+        if ($post->imageExists()) {
+            \Log::info('Error occurred. Not deleting image from storage.');
+        }
 
         return response()->json([
             'status' => 'error',

@@ -17,13 +17,15 @@
 /******/ 	
 /************************************************************************/
 var __webpack_exports__ = {};
-/*!********************************!*\
-  !*** ./resources/js/delete.js ***!
-  \********************************/
+/*!***********************************!*\
+  !*** ./resources/js/deleteCom.js ***!
+  \***********************************/
 __webpack_require__.r(__webpack_exports__);
 $(document).ready(function () {
   $('.delete').on('click', function () {
-    var postId = $(this).data('id');
+    var postId = $(this).data('post-id');
+    var commentId = $(this).data('comment-id');
+    var itemType = $(this).data('type');
     var swalWithBootstrapButtons = Swal.mixin({
       customClass: {
         confirmButton: "btn btn-success",
@@ -31,8 +33,9 @@ $(document).ready(function () {
       },
       buttonsStyling: false
     });
+    var confirmationMessage = itemType === 'comment' ? 'Czy na pewno chcesz usunąć ten komentarz?' : 'Czy na pewno chcesz usunąć ten post?';
     swalWithBootstrapButtons.fire({
-      title: "Jesteś pewny, że chcesz usunąć ten post?",
+      title: confirmationMessage,
       icon: "warning",
       showCancelButton: true,
       confirmButtonText: "Tak",
@@ -40,9 +43,15 @@ $(document).ready(function () {
       reverseButtons: true
     }).then(function (result) {
       if (result.isConfirmed) {
+        var url;
+        if (itemType === 'comment') {
+          url = "'/api/posts/".concat(postId, "/comments' + commentId");
+        } else {
+          url = "/api/posts/".concat(postId);
+        }
         $.ajax({
           method: "DELETE",
-          url: '/api/posts/list/' + postId,
+          url: "/api/posts/".concat(postId, "/comments/").concat(commentId),
           headers: {
             'Accept': 'application/json',
             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')

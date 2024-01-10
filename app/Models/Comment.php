@@ -5,6 +5,9 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 
 class Comment extends Model
@@ -26,4 +29,27 @@ class Comment extends Model
         return $this->image_path !== null
             && Storage::disk('public')->exists($this->image_path);
     }
+
+
+    public function user()
+{
+    return $this->belongsTo(User::class);
+}
+
+public function post()
+{
+    return $this->belongsTo(Post::class);
+}
+
+
+public function likes(): HasMany
+{
+    return $this->hasMany(Like::class);
+}
+  
+public function likesCount(): int
+{
+    return $this->likes()->count();
+}
+
 }

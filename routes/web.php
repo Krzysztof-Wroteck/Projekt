@@ -40,11 +40,14 @@ Route::middleware('auth')->group(function () {
     Route::post('/posts/{post}/shere', [PostController::class, 'sherePost'])->name('posts.shere');
     Route::get('/posts/{post}/edit', [PostController::class, 'edit'])->name('posts.edit');
     Route::put('/posts/{post}', [PostController::class, 'update'])->name('posts.update');
-    Route::delete('/posts/list/{post}', [PostController::class, 'destroy'])->name('posts.destroy');
+
 
     Route::get('/posts/{post}/comments', [CommentController::class, 'index'])->name('comments.index');
     Route::post('/posts/{post}/comments', [CommentController::class, 'store'])->name('posts.comments.store');    
-    Route::get('/posts/comments/{post}', [CommentPageController::class, 'show'])->name('comments.page');
+    Route::get('/posts/comments/{comment}/edit', [CommentController::class, 'edit'])->name('comments.edit');
+    Route::put('/posts/comments/{comment}', [CommentController::class, 'update'])->name('comments.update');
+    Route::post('/comments/{comment}/like', [CommentController::class, 'like'])->name('comments.like');
+
 
 
     Route::get('/users/{user}/posts', [UserController::class, 'usersPosts'])->name('users.posts');
