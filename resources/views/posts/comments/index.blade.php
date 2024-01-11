@@ -58,8 +58,8 @@
                             </a>
 
                             <button class="flex items-center text-gray-600 delete" data-post-id="{{ $post->id }}" data-comment-id="{{ $comment->id }}" data-type="comment">
-    <i class="fa-regular fa-trash-can">Delete</i>
-</button>
+                      <i class="fa-regular fa-trash-can"></i> Usuń
+                            </button>
 
                         </div>
                     <x-nav-link :href="route('users.showProfil', ['user' => $comment->user->id])">
@@ -101,8 +101,7 @@
 
     @section('javascript')
     
-<script src="{{ asset('js/deleteCom.js') }}">
- 
+    <script src="{{ asset('js/deleteCom.js') }}">
     @endsection
 
 </x-app-layout>

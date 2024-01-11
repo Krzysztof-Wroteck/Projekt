@@ -1,27 +1,35 @@
-$(function () {
-    $('.shere').on('click', function (e) {
-        e.preventDefault();
+$(document).ready(function () {
+    $('.shere').on('click', function (event) {
+        event.preventDefault();
+
         const postId = $(this).data('id');
-        const $button = $(this);
+        const shereButton = $(this);
+        const currentScroll = $(window).scrollTop();
 
         $.ajax({
             method: 'POST',
-            url: '/shere/' + postId,
+            url: '/posts/list/' + postId,
             headers: {
+                'Accept': 'application/json',
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
             },
-        }).done(function (data) {
-            if (data.action === 'shared') {
-                $button.addClass('shared');
-                $button.find('.fa').removeClass('fa-regular').addClass('fa-solid');
+        })
+        .done(function (data) {
+            if (data.status === 'success') {
+                const sheresCountElement = shereButton.find('.sheres-count');
+                if (sheresCountElement) {
+                    sheresCountElement.text(data.sheresCount + ' sheres');
+                }
             } else {
-                $button.removeClass('shared');
-                $button.find('.fa').removeClass('fa-solid').addClass('fa-regular');
+                Swal.fire("Error", "Wystąpił błąd podczas sherowania.", "error");
             }
-
-            $button.find('.shere-count').text(data.sheresCount);
-        }).fail(function (data) {
-            console.error(data);
+        })
+        .fail(function (error) {
+            Swal.fire("Error", "Wystąpił błąd podczas sherowania.", "error");
+        })
+        .always(function () {
+            window.scrollTo(0, currentScroll);
+            location.reload();
         });
     });
 });

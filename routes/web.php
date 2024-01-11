@@ -35,11 +35,9 @@ Route::middleware('auth')->group(function () {
 
     Route::post('/posts', [PostController::class, 'store'])->name('posts.store');
     Route::get('/posts/create', [PostController::class, 'create'])->name('posts.create');   
-    Route::get('/posts/list', [PostController::class, 'index'])->name('posts.index');
-    Route::post('/posts/{post}/like', [PostController::class, 'likePost'])->name('posts.like');
-    Route::post('/posts/{post}/shere', [PostController::class, 'sherePost'])->name('posts.shere');
     Route::get('/posts/{post}/edit', [PostController::class, 'edit'])->name('posts.edit');
     Route::put('/posts/{post}', [PostController::class, 'update'])->name('posts.update');
+    Route::get('/posts/list', [PostController::class, 'index'])->name('posts.index');
 
 
     Route::get('/posts/{post}/comments', [CommentController::class, 'index'])->name('comments.index');

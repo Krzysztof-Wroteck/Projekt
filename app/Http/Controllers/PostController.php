@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Post;
 use App\Models\Like;
 use App\Models\Share;
+use App\Models\User;
 
 
 use Illuminate\Support\Facades\Session;
@@ -119,57 +120,93 @@ public function update(Request $request, Post $post)
 
 
 
-    public function likePost($postId)
+    public function likePost($postId): JsonResponse
+    {
+
+        $user = Auth::user();
+    
+        if (!$user) {
+            return response()->json(['status' => 'error', 'message' => 'User not authenticated'], 401);
+        }
+    
+        $post = Post::find($postId);
+    
+        if (!$post) {
+            return response()->json(['status' => 'error', 'message' => 'Post not found'], 404);
+        }
+    
+        $existingLike = $user->likes()->where('post_id', $postId)->exists();
+    
+        try {
+            if ($existingLike) {
+                $user->likes()->where('post_id', $postId)->delete();
+            } else {
+                $like = new Like(['post_id' => $postId]);
+                $user->likes()->save($like);
+            }
+    
+            $likesCount = $post->likes()->count();
+    
+            return response()->json([
+                'status' => 'success',
+                'likesCount' => $likesCount,
+                'redirect' => route('posts.list'),  
+            ]);
+        }
+        catch (\Exception $e) {
+            \Log::error('Error in likePost: ' . $e->getMessage());
+            return response()->json(['status' => 'error', 'message' => $e->getMessage()], 500);
+        }
+    }
+    
+
+
+
+public function sherePost($postId): JsonResponse
 {
     $user = Auth::user();
 
-    if ($user->likes()->where('post_id', $postId)->exists()) {
 
-        $user->likes()->where('post_id', $postId)->delete();
 
-    } else {
-
-        $like = new Like(['post_id' => $postId]);
-
-        $user->likes()->save($like);
-
+    if (!Auth::check()) {
+        return response()->json(['status' => 'error', 'message' => 'User not authenticated'], 401);
+    }
+    if (!$user) {
+        return response()->json(['status' => 'error', 'message' => 'User not authenticated'], 401);
     }
 
-    $likesCount = Post::find($postId)->likesCount();
+    $post = Post::find($postId);
 
-    return back()->with('success', 'Post został pomyślnie zaktualizowany.');
-
-
-}
-
-
-
-
-public function sherePost($postId)
-{
-    $user = Auth::user();
-
-    if ($user->sheres()->where('post_id', $postId)->exists()) {
-
-        $user->sheres()->where('post_id', $postId)->delete();
-
-    } else {
-
-        $share = new Share(['post_id' => $postId]);
-
-        $user->sheres()->save($share);
-
+    if (!$post) {
+        return response()->json(['status' => 'error', 'message' => 'Post not found'], 404);
     }
 
-    $sheresCount = Post::find($postId)->sheresCount();
+    $existingShere = $user->sheres()->where('post_id', $postId)->exists();
 
-    return redirect()->route('posts.index')->with('success', 'sheres został pomyślnie dodany.');
+    try {
+        if ($existingShere) {
+            $user->sheres()->where('post_id', $postId)->delete();
+        } else {
+            $shere = new Share(['post_id' => $postId]);
+            $user->sheres()->save($shere);
+        }
 
+        $sheresCount = $post->sheresCount();
 
+        return response()->json([
+            'status' => 'success',
+            'sheresCount' => $sheresCount,
+        ]);
+    } catch (\Exception $e) {
+        return response()->json(['status' => 'error', 'message' => 'An error occurred'], 500);
+    }
 }
+
 
 public function destroy(Post $post): JsonResponse
 {
+
+    
     try {
         if ($post->imageExists()) {
             Storage::disk('public')->delete($post->image_path);

@@ -7,6 +7,8 @@ use App\Models\Post;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use App\Models\Comment;
+use Illuminate\Support\Facades\Session; 
+use Illuminate\Http\JsonResponse;
 
 class CommentController extends Controller
 {
@@ -84,8 +86,7 @@ public function update(Request $request, Comment $comment)
 }
 
 
-public function destroy(Comment $comment): JsonResponse
-{
+public function destroy(Post $post, Comment $comment): JsonResponse{
     try {
         if ($comment->imageExists()) {
             Storage::disk('public')->delete($comment->image_path);
@@ -95,7 +96,7 @@ public function destroy(Comment $comment): JsonResponse
 
         $comment->delete();
 
-        Session::flash('success', 'Udało się usunąć comment.');
+        Session::flash('success', 'Udało się usunąć komentarz.');
 
         return response()->json([
             'status' => 'success'

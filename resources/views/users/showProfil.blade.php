@@ -82,17 +82,16 @@
                                 @endif
 
                                 <div class="flex items-center mt-4">
-                                    <form action="{{ route('posts.like', $post->id) }}" method="post">
-                                        @csrf
-                                        <button type="submit" class="flex items-center text-gray-600 mr-2">
-                                            @if(Auth::user()->likes()->where('post_id', $post->id)->exists())
-                                                <i class="fa-solid fa-thumbs-up mr-1"></i>
-                                            @else
-                                                <i class="fa-regular fa-thumbs-up mr-1"></i>
-                                            @endif
-                                            <span class="text-gray-600 mr-2">{{ $post->likesCount() }} likes</span>
-                                        </button>
-                                    </form>
+                                <form action="{{ route('posts.like', $post->id) }}" method="post">
+                                @csrf
+                                <button class="flex items-center text-gray-600 mr-2 like" data-id="{{ $post->id }}">                                    @if(Auth::user()->likes()->where('post_id', $post->id)->exists())
+                                        <i class="fa-solid fa-thumbs-up mr-1 "></i>
+                                    @else
+                                        <i class="fa-regular fa-thumbs-up mr-1"></i>
+                                    @endif
+                                    <span class="text-gray-600 mr-2">{{ $post->likesCount() }} likes</span>
+                                </button>
+                            </form>
                                     <form action="{{ route('posts.shere', $post->id) }}" method="post">
                                         @csrf
                                         <button type="submit" class="flex items-center text-gray-600 mr-2">
@@ -125,5 +124,7 @@
 
     @section('javascript')
         <script src="{{ asset('js/delete.js') }}">
+                    <script src="{{ asset('js/like.js') }}">
+
         @endsection
 </x-app-layout>

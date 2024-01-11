@@ -17,16 +17,16 @@
 /******/ 	
 /************************************************************************/
 var __webpack_exports__ = {};
-/*!*******************************!*\
-  !*** ./resources/js/shere.js ***!
-  \*******************************/
+/*!******************************!*\
+  !*** ./resources/js/like.js ***!
+  \******************************/
 __webpack_require__.r(__webpack_exports__);
 $(document).ready(function () {
-  $('.shere').on('click', function (event) {
+  $('.like-form').on('submit', function (event) {
     event.preventDefault();
-    var postId = $(this).data('id');
-    var shereButton = $(this);
-    var currentScroll = $(window).scrollTop();
+    var form = $(this);
+    var postId = form.data('post-id');
+    var likeButton = form.find('.like-button');
     $.ajax({
       method: 'POST',
       url: '/posts/list/' + postId,
@@ -36,17 +36,16 @@ $(document).ready(function () {
       }
     }).done(function (data) {
       if (data.status === 'success') {
-        var sheresCountElement = shereButton.find('.sheres-count');
-        if (sheresCountElement) {
-          sheresCountElement.text(data.sheresCount + ' sheres');
+        var likesCountElement = likeButton.find('.likes-count');
+        if (likesCountElement) {
+          likesCountElement.text(data.likesCount + ' likes');
         }
       } else {
-        Swal.fire("Error", "Wystąpił błąd podczas sherowania.", "error");
+        alert("Wystąpił błąd podczas polubienia/odlubienia.");
       }
     }).fail(function (error) {
-      Swal.fire("Error", "Wystąpił błąd podczas sherowania.", "error");
+      alert("Wystąpił błąd podczas polubienia/odlubienia.");
     }).always(function () {
-      window.scrollTo(0, currentScroll);
       location.reload();
     });
   });

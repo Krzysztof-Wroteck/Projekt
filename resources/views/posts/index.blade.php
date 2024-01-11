@@ -39,13 +39,13 @@
                             </button>
                         </div>
                         <div class="font-semibold text-lg text-gray-800 dark:text-gray-200">
-    <x-nav-link :href="route('users.showProfil', ['user' => $post->user->id])">
-        {{ $post->user->name }}
-        @if($post->created_at != $post->updated_at)
-            (edited)
-        @endif
-    </x-nav-link>
-</div>
+                            <x-nav-link :href="route('users.showProfil', ['user' => $post->user->id])">
+                                {{ $post->user->name }}
+                                @if($post->created_at != $post->updated_at)
+                                    (edited)
+                                @endif
+                            </x-nav-link>
+                        </div>
                         <div class="text-gray-700 dark:text-gray-300">{{ $post->temat }}</div>
 
                         @if($post->image_path)
@@ -65,34 +65,35 @@
                         @endif
 
                         <div class="flex items-center mt-4">
-                            <form action="{{ route('posts.like', $post->id) }}" method="post">
-                                @csrf
-                                <button type="submit" class="flex items-center text-gray-600 mr-2">
-                                    @if(Auth::user()->likes()->where('post_id', $post->id)->exists())
-                                        <i class="fa-solid fa-thumbs-up mr-1"></i>
-                                    @else
-                                        <i class="fa-regular fa-thumbs-up mr-1"></i>
-                                    @endif
-                                    <span class="text-gray-600 mr-2">{{ $post->likesCount() }} likes</span>
-                                </button>
-                            </form>
+                        <form class="like-form" action="{{ route('posts.like', $post->id) }}" method="post" data-post-id="{{ $post->id }}">
+    @csrf
+    <button type="submit" class="flex items-center text-gray-600 mr-2 like-button">
+        @if(Auth::user()->likes()->where('post_id', $post->id)->exists())
+            <i class="fa-solid fa-thumbs-up mr-1"></i>
+        @else
+            <i class="fa-regular fa-thumbs-up mr-1"></i>
+        @endif
+        <span class="text-gray-600 mr-2 likes-count">{{ $post->likesCount() }} likes</span>
+    </button> 
+</form>
+
+
                             <form action="{{ route('posts.shere', $post->id) }}" method="post">
                                 @csrf
-                                <button type="submit" class="flex items-center text-gray-600 mr-2">
+                                <button type="submit" class="flex items-center text-gray-600 mr-2 shere" data-id="{{ $post->id }}">
                                     @if(Auth::user()->sheres()->where('post_id', $post->id)->exists())
                                         <i class="fa-solid fa-share-from-square"></i>
                                     @else
                                         <i class="fa-regular fa-share-from-square"></i>
                                     @endif
-                                    <span class="text-gray-600 mr-2">{{ $post->sheresCount() }} sheres</span>
+                                    <span class="text-gray-600 mr-2 sheres-count">{{ $post->sheresCount() }} sheres</span>
                                 </button>
                             </form>
-    <button class="flex items-center text-gray-600">
-        <i class="fa-regular fa-pen-to-square mr-1"></i>
-        <a href="{{ route('comments.index', $post->id) }}" class="text-gray-600">{{ $post->comments()->count() }} Comment</a>
-    </button>
 
-
+                            <button class="flex items-center text-gray-600">
+                                <i class="fa-regular fa-pen-to-square mr-1"></i>
+                                <a href="{{ route('comments.index', $post->id) }}" class="text-gray-600">{{ $post->comments()->count() }} Comment</a>
+                            </button>
                         </div>
                     </div>
                 @endforeach
@@ -102,6 +103,7 @@
 
     @section('javascript')
         <script src="{{ asset('js/delete.js') }}">
- 
+        <script src="{{ asset('js/like.js') }}">
+        <script src="{{ asset('js/shere.js') }}">
     @endsection
 </x-app-layout>
