@@ -9,6 +9,7 @@ use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use App\Enums\UserRole;
 
 class User extends Authenticatable
 {
@@ -71,5 +72,8 @@ class User extends Authenticatable
         return $this->belongsToMany(User::class, 'followers', 'follower_id', 'following_id')
             ->withTimestamps();
     }
-    
+    public function isAdmin()
+{
+    return $this->role === UserRole::ADMIN;
+}
 }

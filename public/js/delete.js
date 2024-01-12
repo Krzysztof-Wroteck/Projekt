@@ -24,6 +24,7 @@ __webpack_require__.r(__webpack_exports__);
 $(document).ready(function () {
   $('.delete').on('click', function () {
     var postId = $(this).data('id');
+    var csrfToken = $('meta[name="csrf-token"]').attr('content');
     var swalWithBootstrapButtons = Swal.mixin({
       customClass: {
         confirmButton: "btn btn-success",
@@ -45,7 +46,7 @@ $(document).ready(function () {
           url: '/api/posts/list/' + postId,
           headers: {
             'Accept': 'application/json',
-            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            'X-CSRF-TOKEN': csrfToken
           }
         }).done(function (data) {
           if (data.status === 'success') {

@@ -7,15 +7,17 @@ use App\Models\Like;
 use App\Models\Share;
 use App\Models\User;
 
-
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
+use Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful;
+
+
 
 class PostController extends Controller
 {
@@ -65,10 +67,13 @@ class PostController extends Controller
     }
 
 
-        public function edit(Post $post)
+    public function edit(Post $post)
 {
+    $this->authorize('edit', $post);
+
     return view('posts.edit', compact('post'));
 }
+
 
 
 public function update(Request $request, Post $post)
@@ -115,52 +120,51 @@ public function update(Request $request, Post $post)
 
         Post::create($request->all());
 
-        return redirect()->route('posts.index')->with('success', 'Post został pomyślnie dodany.');
+        return redirect()->route('users.posts', ['user' => $user_id])->with('success', 'Post został pomyślnie dodany.'); 
+       }
+
+
+
+       public function likePost($postId): JsonResponse
+{
+    $user = Auth::user();
+    
+    if (!$user) {
+        return response()->json(['status' => 'error', 'message' => 'User not authenticated'], 401);
     }
 
+    $post = Post::find($postId);
 
+    if (!$post) {
+        return response()->json(['status' => 'error', 'message' => 'Post not found'], 404);
+    }
 
-    public function likePost($postId): JsonResponse
-    {
-
-        $user = Auth::user();
-    
-        if (!$user) {
-            return response()->json(['status' => 'error', 'message' => 'User not authenticated'], 401);
-        }
-    
-        $post = Post::find($postId);
-    
-        if (!$post) {
-            return response()->json(['status' => 'error', 'message' => 'Post not found'], 404);
-        }
-    
+    try {
         $existingLike = $user->likes()->where('post_id', $postId)->exists();
-    
-        try {
-            if ($existingLike) {
-                $user->likes()->where('post_id', $postId)->delete();
-            } else {
-                $like = new Like(['post_id' => $postId]);
-                $user->likes()->save($like);
-            }
-    
-            $likesCount = $post->likes()->count();
-    
-            return response()->json([
-                'status' => 'success',
-                'likesCount' => $likesCount,
-                'redirect' => route('posts.list'),  
-            ]);
+
+        if ($existingLike) {
+            $user->likes()->where('post_id', $postId)->delete();
+        } else {
+            $like = new Like(['post_id' => $postId]);
+            $user->likes()->save($like);
         }
-        catch (\Exception $e) {
-            \Log::error('Error in likePost: ' . $e->getMessage());
-            return response()->json(['status' => 'error', 'message' => $e->getMessage()], 500);
-        }
+
+        $likesCount = $post->likes()->count();
+
+        return response()->json([
+            'status' => 'success',
+            'likesCount' => $likesCount,
+        ]);
+    } catch (\Exception $e) {
+        \Log::error('Error in likePost: ' . $e->getMessage());
+        return response()->json(['status' => 'error', 'message' => $e->getMessage()], 500);
     }
-    
+}
 
-
+public function __construct()
+    {
+        $this->middleware('auth:sanctum')->only('likePost');
+    }
 
 public function sherePost($postId): JsonResponse
 {
@@ -203,41 +207,51 @@ public function sherePost($postId): JsonResponse
 }
 
 
+
 public function destroy(Post $post): JsonResponse
 {
+    $user = Auth::user();
 
-    
-    try {
-        if ($post->imageExists()) {
-            Storage::disk('public')->delete($post->image_path);
+    if ($user && ($user->isAdmin() || $user->id === $post->user_id)) {
+                try {
+           
+            if ($post->imageExists()) {
+                Storage::disk('public')->delete($post->image_path);
+            }
+
+            $post->likes()->delete();
+            $post->sheres()->delete();
+            $commentsWithLikes = $post->comments()->whereHas('likes')->get();
+
+            foreach ($commentsWithLikes as $comment) {
+                $comment->likes()->delete();
+            }
+
+            $post->comments()->delete();
+            $post->delete();
+
+            Session::flash('success', 'Udało się usunąć post.');
+
+            return response()->json(['status' => 'success']);
+        } catch (\Exception $e) {
+            \Log::error($e);
+
+            if ($post->imageExists()) {
+            }
+
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Wystąpił błąd!'
+            ])->setStatusCode(500);
         }
-
-        $post->likes()->delete();
-        $post->sheres()->delete();
-        $commentsWithLikes = $post->comments()->whereHas('likes')->get();
-        foreach ($commentsWithLikes as $comment) {
-            $comment->likes()->delete();
-        }
-        $post->comments()->delete();
-        $post->delete();
-
-        Session::flash('success', 'Udało się usunąć post.');
-
-        return response()->json([
-            'status' => 'success'
-        ]);
-    } catch (\Exception $e) {
-        \Log::error($e);
-
-        if ($post->imageExists()) {
-            \Log::info('Error occurred. Not deleting image from storage.');
-        }
-
-        return response()->json([
-            'status' => 'error',
-            'message' => 'Wystąpił błąd!'
-        ])->setStatusCode(500);
     }
+
+
+    return response()->json([
+        'status' => 'error',
+        'message' => 'Brak autoryzacji.'
+    ])->setStatusCode(401);
 }
+
 
 }

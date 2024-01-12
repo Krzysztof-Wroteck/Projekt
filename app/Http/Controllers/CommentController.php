@@ -46,9 +46,11 @@ class CommentController extends Controller
     
     
     public function edit(Comment $comment)
-{
-    return view('posts.comments.edit', compact('comment'));
-}
+    {
+        $this->authorize('edit', $comment);
+    
+        return view('posts.comments.edit', compact('comment'));
+    }
 
 public function update(Request $request, Comment $comment)
 {
@@ -87,6 +89,11 @@ public function update(Request $request, Comment $comment)
 
 
 public function destroy(Post $post, Comment $comment): JsonResponse{
+
+
+    $user = Auth::user();
+
+    if ($user && ($user->isAdmin() || $user->id === $comment->user_id)) {
     try {
         if ($comment->imageExists()) {
             Storage::disk('public')->delete($comment->image_path);
@@ -113,6 +120,12 @@ public function destroy(Post $post, Comment $comment): JsonResponse{
             'message' => 'Wystąpił błąd!'
         ])->setStatusCode(500);
     }
+}
+
+return response()->json([
+    'status' => 'error',
+    'message' => 'Brak autoryzacji.'
+])->setStatusCode(401);
 }
 
 public function like($commentId)

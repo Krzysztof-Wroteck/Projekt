@@ -1,6 +1,8 @@
-$(document).ready(function() {
-    $('.delete').on('click', function() {
+$(document).ready(function () {
+    $('.delete').on('click', function () {
         const postId = $(this).data('id');
+        const csrfToken = $('meta[name="csrf-token"]').attr('content');
+
         const swalWithBootstrapButtons = Swal.mixin({
             customClass: {
                 confirmButton: "btn btn-success",
@@ -22,16 +24,16 @@ $(document).ready(function() {
                     method: "DELETE",
                     url: '/api/posts/list/' + postId,
                     headers: {
-                        'Accept': 'application/json', 
-                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                        'Accept': 'application/json',
+                        'X-CSRF-TOKEN': csrfToken
                     },
-                }).done(function(data) {
+                }).done(function (data) {
                     if (data.status === 'success') {
                         window.location.reload();
                     } else {
                         Swal.fire("Error", "Wystąpił błąd podczas usuwania.", "error");
                     }
-                }).fail(function(data) {
+                }).fail(function (data) {
                     Swal.fire("Error", data.responseJSON.message, data.responseJSON.status);
                 });
             }

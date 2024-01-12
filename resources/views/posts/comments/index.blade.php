@@ -52,14 +52,20 @@
             @if($comment->user)
                 <div class="font-semibold text-gray-800 dark:text-gray-200">
                 <div class="flex justify-end mb-2">
-                            <a href="{{ route('comments.edit', ['comment' => $comment->id]) }}" class="flex items-center text-gray-600 mr-2">
-                                <i class="fa-solid fa-pen"></i>
-                                Edit
-                            </a>
+                @can('edit', $comment)
+    <a href="{{ route('comments.edit', ['comment' => $comment->id]) }}" class="flex items-center text-gray-600 mr-2">
+        <i class="fa-solid fa-pen"></i>
+        Edit
+    </a>
+@endcan
 
-                            <button class="flex items-center text-gray-600 delete" data-post-id="{{ $post->id }}" data-comment-id="{{ $comment->id }}" data-type="comment">
-                      <i class="fa-regular fa-trash-can"></i> Usuń
-                            </button>
+
+                            @if(Auth::check() && (Auth::user()->isAdmin() || Auth::user()->id === $comment->user_id))
+    <button class="flex items-center text-gray-600 delete" data-post-id="{{ $post->id }}" data-comment-id="{{ $comment->id }}" data-type="comment">
+        <i class="fa-regular fa-trash-can"></i> Usuń
+    </button>
+@endif
+
 
                         </div>
                     <x-nav-link :href="route('users.showProfil', ['user' => $comment->user->id])">

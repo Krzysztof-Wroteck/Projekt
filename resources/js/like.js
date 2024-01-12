@@ -1,34 +1,28 @@
-$(document).ready(function () {
-    $('.like-form').on('submit', function (event) {
-        event.preventDefault();
+$(document).ready(function() {
+    $('.like-form').on('submit', function(e) {
+        e.preventDefault();
 
         const form = $(this);
         const postId = form.data('post-id');
-        const likeButton = form.find('.like-button');
-        
+        const csrfToken = $('meta[name="csrf-token"]').attr('content');
+
         $.ajax({
-            method: 'POST',
-            url: '/api/posts/list/' + postId,
+            method: "POST",
+            url: '/api/posts/like/' + postId,
             headers: {
                 'Accept': 'application/json',
-                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                'X-CSRF-TOKEN': csrfToken
             },
-        })
-        .done(function(data) {
+        }).done(function(data) {
             if (data.status === 'success') {
-                const likesCountElement = likeButton.find('.likes-count'); 
-                if (likesCountElement) {
-                    likesCountElement.text(data.likesCount + ' likes');
-                }
+                const likesCountElement = form.find('.likes-count');
+                const currentLikesCount = parseInt(likesCountElement.text().split(' ')[0]);
+                likesCountElement.text((currentLikesCount + 1) + ' likes');
             } else {
-                alert("1 Wystąpił błąd podczas polubienia/odlubienia.");
+                Swal.fire("Error", "Wystąpił błąd podczas dodawania polubienia.", "error");
             }
-        })
-        .fail(function(error) {
-            alert("2 Wystąpił błąd podczas polubienia/odlubienia.");
-        })
-        .always(function() {
-            location.reload();  
+        }).fail(function(data) {
+            Swal.fire("Error", data.responseJSON.message, data.responseJSON.status);
         });
     });
 });

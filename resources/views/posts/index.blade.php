@@ -29,14 +29,20 @@
                 @foreach($posts as $post)
                     <div class="fixed-width bg-gray-200 dark:bg-gray-700 rounded-md p-4 mb-4">
                         <div class="flex justify-end mb-2">
-                            <a href="{{ route('posts.edit', $post->id) }}" class="flex items-center text-gray-600 mr-2">
-                                <i class="fa-solid fa-pen"></i>
-                                Edit
-                            </a>
+                          @can('edit', $post)
+    <a href="{{ route('posts.edit', ['post' => $post->id]) }}" class="flex items-center text-gray-600 mr-2">
+        <i class="fa-solid fa-pen"></i>
+        Edit
+    </a>
+@endcan
 
-                            <button class="flex items-center text-gray-600 delete" data-id="{{ $post->id }}">
-                                <i class="fa-regular fa-trash-can">Delete</i>
-                            </button>
+                            @if (auth()->check() && (auth()->user()->isAdmin() || auth()->user()->id === $post->user_id))
+    <button class="flex items-center text-gray-600 delete" type="button" data-id="{{ $post->id }}" data-user-id="{{ auth()->user()->id }}">
+        @csrf
+        <i class="fa-regular fa-trash-can"></i>Delete
+    </button>
+@endif
+
                         </div>
                         <div class="font-semibold text-lg text-gray-800 dark:text-gray-200">
                             <x-nav-link :href="route('users.showProfil', ['user' => $post->user->id])">
@@ -65,7 +71,7 @@
                         @endif
 
                         <div class="flex items-center mt-4">
-                        <form class="like-form" action="{{ route('posts.like', $post->id) }}" method="post" data-post-id="{{ $post->id }}">
+                        <form class="like-form" action="{{ route('posts.like.api', $post->id) }}" method="post" data-post-id="{{ $post->id }}">
     @csrf
     <button type="submit" class="flex items-center text-gray-600 mr-2 like-button">
         @if(Auth::user()->likes()->where('post_id', $post->id)->exists())
