@@ -1,9 +1,8 @@
 <?php
 
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\PostController;
 use App\Http\Controllers\CommentController;
+use App\Http\Controllers\PostController;
+use Illuminate\Support\Facades\Route;
 
 /*
 |--------------------------------------------------------------------------
@@ -16,20 +15,14 @@ use App\Http\Controllers\CommentController;
 |
 */
 
-
 Route::middleware(['auth:sanctum', 'admin_or_author'])->group(function () {
     Route::delete('/posts/list/{post}', [PostController::class, 'destroy'])->name('posts.destroy');
     Route::delete('/posts/{post}/comments/{comment}', [CommentController::class, 'destroy'])->name('comments.destroyApi');
-     
-    Route::post('/posts/shere/{post}', [PostController::class, 'sherePost'])->name('posts.shere');
 
 });
 
-
 Route::middleware('auth:sanctum')->group(function () {
-    Route::post('/api/posts/list/{post}', [PostController::class, 'likePost'])->name('posts.like.api');
-
-  
-
-    
+    Route::post('/posts/list/{post}', [PostController::class, 'likePost'])->name('posts.like.api');
+    Route::post('/posts/shere/{post}', [PostController::class, 'sherePost'])->name('posts.shere');
+    Route::post('/posts/{post}/comments/{comment}/like', [CommentController::class, 'like'])->name('comments.like.api');
 });

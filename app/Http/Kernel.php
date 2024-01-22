@@ -39,12 +39,12 @@ class Kernel extends HttpKernel
             \Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful::class,
         ],
 
-            'api' => [
-                \Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful::class,
-                'throttle:api',
-                \Illuminate\Routing\Middleware\SubstituteBindings::class,
-                \App\Http\Middleware\VerifyCsrfToken::class, // Dodane dla CSRF, usuń, jeśli nie korzystasz z CSRF w twoim API
-            ],
+        'api' => [
+            \Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful::class,
+            'throttle:api',
+            \Illuminate\Routing\Middleware\SubstituteBindings::class,
+            \App\Http\Middleware\VerifyCsrfToken::class, // Dodane dla CSRF, usuń, jeśli nie korzystasz z CSRF w twoim API
+        ],
     ];
 
     /**
@@ -67,7 +67,6 @@ class Kernel extends HttpKernel
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
     ];
-
 
     protected $routeMiddleware = [
         'admin' => \App\Http\Middleware\AdminMiddleware::class,

@@ -26,10 +26,6 @@ $(document).ready(function () {
     var postId = $(this).data('post-id');
     var commentId = $(this).data('comment-id');
     var swalWithBootstrapButtons = Swal.mixin({
-      customClass: {
-        confirmButton: "btn btn-success",
-        cancelButton: "btn btn-danger"
-      },
       buttonsStyling: false
     });
     swalWithBootstrapButtons.fire({
@@ -38,6 +34,10 @@ $(document).ready(function () {
       showCancelButton: true,
       confirmButtonText: "Tak",
       cancelButtonText: "Nie",
+      customClass: {
+        confirmButton: 'btn btn-success styled-button',
+        cancelButton: 'btn btn-danger styled-button'
+      },
       reverseButtons: true
     }).then(function (result) {
       if (result.isConfirmed) {

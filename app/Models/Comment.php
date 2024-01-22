@@ -4,16 +4,12 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\HasOne;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-
+use Illuminate\Support\Facades\Storage;
 
 class Comment extends Model
 {
     use HasFactory;
-
 
     protected $fillable = ['temat', 'image_path', 'user_id', 'post_id'];
 
@@ -30,26 +26,23 @@ class Comment extends Model
             && Storage::disk('public')->exists($this->image_path);
     }
 
-
     public function user()
-{
-    return $this->belongsTo(User::class);
-}
+    {
+        return $this->belongsTo(User::class);
+    }
 
-public function post()
-{
-    return $this->belongsTo(Post::class);
-}
+    public function post()
+    {
+        return $this->belongsTo(Post::class);
+    }
 
+    public function likes(): HasMany
+    {
+        return $this->hasMany(Like::class);
+    }
 
-public function likes(): HasMany
-{
-    return $this->hasMany(Like::class);
-}
-  
-public function likesCount(): int
-{
-    return $this->likes()->count();
-}
-
+    public function likesCount(): int
+    {
+        return $this->likes()->count();
+    }
 }

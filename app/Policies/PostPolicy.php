@@ -2,9 +2,8 @@
 
 namespace App\Policies;
 
-use App\Models\User;
-use App\Enums\UserRole;
 use App\Models\Post;
+use App\Models\User;
 
 class PostPolicy
 {
@@ -17,15 +16,14 @@ class PostPolicy
     }
 
     public function deletePost(User $user, $postId)
-{
-    $post = Post::findOrFail($postId);
+    {
+        $post = Post::findOrFail($postId);
 
-    return $user->isAdmin() || $user;
-}
+        return $user->isAdmin() || $user;
+    }
 
-
-public function edit(User $user, Post $post)
-{
-    return $user->isAdmin() || $user->id === $post->user_id;
-}
+    public function edit(User $user, Post $post)
+    {
+        return $user->isAdmin() || $user->id === $post->user_id;
+    }
 }

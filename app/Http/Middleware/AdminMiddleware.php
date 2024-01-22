@@ -4,7 +4,6 @@ namespace App\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
-use App\Enums\UserRole;
 
 class AdminMiddleware
 {
@@ -16,6 +15,4 @@ class AdminMiddleware
 
         abort(403, 'Access denied');
     }
-
-    
 }

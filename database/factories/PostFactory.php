@@ -2,10 +2,8 @@
 
 namespace Database\Factories;
 
-
-use Illuminate\Database\Eloquent\Factories\Factory;
 use App\Models\Post;
-use Illuminate\Support\Str;
+use Illuminate\Database\Eloquent\Factories\Factory;
 
 class PostFactory extends Factory
 {
@@ -16,7 +14,7 @@ class PostFactory extends Factory
         return [
             'temat' => $this->faker->sentence(),
             'user_id' => \App\Models\User::factory(),
-            
+
         ];
     }
 }

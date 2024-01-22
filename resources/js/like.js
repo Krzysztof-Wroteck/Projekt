@@ -1,28 +1,55 @@
-$(document).ready(function() {
-    $('.like-form').on('submit', function(e) {
-        e.preventDefault();
-
-        const form = $(this);
-        const postId = form.data('post-id');
+$(document).ready(function () {
+    $('.like').on('click', function (event) {
+        event.preventDefault();
+        const postId = $(this).closest('.like-form').find('input[name="post_id"]').val();
         const csrfToken = $('meta[name="csrf-token"]').attr('content');
 
-        $.ajax({
-            method: "POST",
-            url: '/api/posts/like/' + postId,
-            headers: {
-                'Accept': 'application/json',
-                'X-CSRF-TOKEN': csrfToken
+        const swalWithBootstrapButtons = Swal.mixin({
+            customClass: {
+                confirmButton: 'btn btn-success styled-button',
+                cancelButton: 'btn btn-danger styled-button'
             },
-        }).done(function(data) {
-            if (data.status === 'success') {
-                const likesCountElement = form.find('.likes-count');
-                const currentLikesCount = parseInt(likesCountElement.text().split(' ')[0]);
-                likesCountElement.text((currentLikesCount + 1) + ' likes');
-            } else {
-                Swal.fire("Error", "Wystąpił błąd podczas dodawania polubienia.", "error");
+            buttonsStyling: false
+        });
+
+        swalWithBootstrapButtons.fire({
+            title: "Jesteś pewny, że chcesz polubić/oblud ten post?",
+            icon: "question",
+            showCancelButton: true,
+            confirmButtonText: "Tak, polub/odlub komentarz",
+         cancelButtonText: "Nie, anuluj",
+            customClass: {
+                confirmButton: 'btn btn-success styled-button',
+                cancelButton: 'btn btn-danger styled-button'
+            },
+            reverseButtons: true,
+            buttonsStyling: false,
+           
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    method: "POST",
+                    url: '/api/posts/list/' + postId,
+                    headers: {
+                        'Accept': 'application/json',
+                        'X-CSRF-TOKEN': csrfToken
+                    },
+                }).done(function (data) {
+                    if (data.status === 'success') {
+                        swalWithBootstrapButtons.fire(
+                            'Sukces!',
+                            'Post został polubiony/odlubić.',
+                            'success'
+                        ).then(() => {
+                            location.reload();
+                        });
+                    } else {
+                        Swal.fire("Error", "Wystąpił błąd podczas polubienia.", "error");
+                    }
+                }).fail(function (data) {
+                    Swal.fire("Error", data.responseJSON.message, data.responseJSON.status);
+                });
             }
-        }).fail(function(data) {
-            Swal.fire("Error", data.responseJSON.message, data.responseJSON.status);
         });
     });
 });

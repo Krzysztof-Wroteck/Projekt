@@ -3,10 +3,6 @@ $(document).ready(function() {
       const postId = $(this).data('post-id');
 const commentId = $(this).data('comment-id');
         const swalWithBootstrapButtons = Swal.mixin({
-            customClass: {
-                confirmButton: "btn btn-success",
-                cancelButton: "btn btn-danger"
-            },
             buttonsStyling: false
         });
 
@@ -16,6 +12,10 @@ const commentId = $(this).data('comment-id');
             showCancelButton: true,
             confirmButtonText: "Tak",
             cancelButtonText: "Nie",
+            customClass: {
+                confirmButton: 'btn btn-success styled-button',
+                cancelButton: 'btn btn-danger styled-button'
+            },
             reverseButtons: true
         }).then((result) => {
             if (result.isConfirmed) {

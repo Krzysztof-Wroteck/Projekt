@@ -1,24 +1,17 @@
 <?php
 
 namespace App\Models;
-use App\Models\User;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Database\Eloquent\Relations\HasOne;
-use App\Enums\UserRole;
-
 
 class Post extends Model
 {
-
     use HasFactory;
 
-    
     protected $fillable = [
         'Temat',
         'image_path',
@@ -35,39 +28,26 @@ class Post extends Model
         return $this->hasMany(Like::class);
     }
 
-    
     public function likesCount(): int
     {
         return $this->likes()->count();
     }
-
-
 
     public function sheres(): HasMany
     {
         return $this->hasMany(Share::class);
     }
 
-
-    
-    
     public function sheresCount(): int
     {
         return $this->sheres()->count();
     }
-
 
     public function comments()
     {
         return $this->hasMany(Comment::class);
     }
 
-
-
-
-
-    
-    
     public function imageUrl(): string
     {
         return $this->imageExists()

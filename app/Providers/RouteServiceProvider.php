@@ -41,5 +41,4 @@ class RouteServiceProvider extends ServiceProvider
     protected $policies = [
         Post::class => PostPolicy::class,
     ];
-    
 }

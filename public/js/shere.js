@@ -24,30 +24,47 @@ __webpack_require__.r(__webpack_exports__);
 $(document).ready(function () {
   $('.shere').on('click', function (event) {
     event.preventDefault();
-    var postId = $(this).data('id');
-    var shereButton = $(this);
-    var currentScroll = $(window).scrollTop();
-    $.ajax({
-      method: 'POST',
-      url: '/posts/list/' + postId,
-      headers: {
-        'Accept': 'application/json',
-        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+    var postId = $(this).closest('.shere-form').find('input[name="post_id"]').val(); // Poprawione pobieranie post_id
+    var csrfToken = $('meta[name="csrf-token"]').attr('content');
+    var swalWithBootstrapButtons = Swal.mixin({
+      customClass: {
+        confirmButton: "btn btn-success",
+        cancelButton: "btn btn-danger"
+      },
+      buttonsStyling: false
+    });
+    swalWithBootstrapButtons.fire({
+      title: "Jesteś pewny, że chcesz udostępnić/odudostępnić ten post?",
+      icon: "question",
+      showCancelButton: true,
+      confirmButtonText: "Tak, udostępnij/odudostępnij post!",
+      cancelButtonText: "Nie, anuluj",
+      customClass: {
+        confirmButton: 'btn btn-success styled-button',
+        cancelButton: 'btn btn-danger styled-button'
+      },
+      reverseButtons: true
+    }).then(function (result) {
+      if (result.isConfirmed) {
+        $.ajax({
+          method: "POST",
+          url: '/api/posts/shere/' + postId,
+          headers: {
+            'Accept': 'application/json',
+            'X-CSRF-TOKEN': csrfToken
+          }
+        }).done(function (data) {
+          if (data.status === 'success') {
+            swalWithBootstrapButtons.fire('Sukces!', 'Post został udostępniony/odudostępiony.', 'success').then(function () {
+              location.reload();
+            });
+          } else {
+            Swal.fire("Error", "Wystąpił błąd podczas udostępniania.", "error");
+          }
+        }).fail(function (data) {
+          Swal.fire("Error", data.responseJSON.message, data.responseJSON.status);
+        });
       }
-    }).done(function (data) {
-      if (data.status === 'success') {
-        var sheresCountElement = shereButton.find('.sheres-count');
-        if (sheresCountElement) {
-          sheresCountElement.text(data.sheresCount + ' sheres');
-        }
-      } else {
-        Swal.fire("Error", "Wystąpił błąd podczas sherowania.", "error");
-      }
-    }).fail(function (error) {
-      Swal.fire("Error", "Wystąpił błąd podczas sherowania.", "error");
-    }).always(function () {
-      window.scrollTo(0, currentScroll);
-      location.reload();
     });
   });
 });

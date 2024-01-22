@@ -4,10 +4,7 @@ $(document).ready(function () {
         const csrfToken = $('meta[name="csrf-token"]').attr('content');
 
         const swalWithBootstrapButtons = Swal.mixin({
-            customClass: {
-                confirmButton: "btn btn-success",
-                cancelButton: "btn btn-danger"
-            },
+            
             buttonsStyling: false
         });
 
@@ -17,6 +14,10 @@ $(document).ready(function () {
             showCancelButton: true,
             confirmButtonText: "Tak",
             cancelButtonText: "Nie",
+            customClass: {
+                confirmButton: 'btn btn-success styled-button',
+                cancelButton: 'btn btn-danger styled-button'
+            },
             reverseButtons: true
         }).then((result) => {
             if (result.isConfirmed) {
@@ -38,5 +39,17 @@ $(document).ready(function () {
                 });
             }
         });
+    });
+});
+
+document.addEventListener("DOMContentLoaded", function() {
+    var menu = document.getElementById("menu");
+
+    menu.addEventListener("mouseenter", function() {
+        this.classList.add("expanded");
+    });
+
+    menu.addEventListener("mouseleave", function() {
+        this.classList.remove("expanded");
     });
 });
