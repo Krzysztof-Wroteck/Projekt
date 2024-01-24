@@ -9,6 +9,6 @@ class UserRole
 
     const TYPES = [
         self::ADMIN,
-        self::USER
+        self::USER,
     ];
 }

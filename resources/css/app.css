@@ -30,7 +30,6 @@ table {
     padding: 0.3rem;
 }
 
-/* Dodatkowe stylizacje dla obrazów w tabeli (dostosuj do swoich potrzeb) */
 .table img {
     max-width: 100px;
     max-height: 100px;
@@ -83,3 +82,18 @@ img {
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
+#menu {
+    width: 150px; 
+}
+
+#menu option {
+    display: none;
+}
+
+#menu:hover option {
+    display: block;
+}
+
+#menu.expanded {
+    height: auto;
+}

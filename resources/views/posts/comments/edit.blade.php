@@ -21,9 +21,10 @@
                     @if ($comment->image_path)
                         <img src="{{ asset('storage/' . $comment->image_path) }}" alt="Current Image" class="max-w-full mb-2 rounded-md">
                         <div class="mb-2">
-                            <input type="checkbox" name="remove_image" id="remove_image">
-                            <label for="remove_image" class="text-sm text-gray-700">Usuń aktualne zdjęcie</label>
-                        </div>
+    <input type="checkbox" name="remove_image" id="remove_image" value="1">
+    <label for="remove_image" class="text-sm text-gray-700">Usuń aktualne zdjęcie</label>
+</div>
+
                     @endif
                     <input type="file" name="image" class="form-input border rounded-md p-2 w-full" accept="image/*,video/*">
                     <small class="text-gray-500">Akceptowane formaty: obraz (jpeg, png, jpg, gif) lub video (mp4)</small>

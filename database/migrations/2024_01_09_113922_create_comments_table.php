@@ -16,11 +16,11 @@ return new class extends Migration
             $table->string('temat');
             $table->string('image_path', 150)->nullable();
             $table->foreignId('user_id')
-                ->constrained('users') 
+                ->constrained('users')
                 ->onDelete('no action');
             $table->foreignId('post_id')
-                ->constrained('posts') 
-                ->onDelete('no action');    
+                ->constrained('posts')
+                ->onDelete('no action');
             $table->rememberToken();
             $table->timestamps();
         });

@@ -1,24 +1,20 @@
 <?php
 
 namespace App\Models;
-use App\Models\User;
+
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Support\Facades\DB;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Database\Eloquent\Relations\HasOne;
-
 
 class Post extends Model
 {
-
     use HasFactory;
 
-    
     protected $fillable = [
-        'Temat',
+        'temat',
         'image_path',
         'user_id',
     ];
@@ -28,44 +24,31 @@ class Post extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function likes(): HasMany
+    public function likes(): MorphMany
     {
-        return $this->hasMany(Like::class);
+        return $this->morphMany(Like::class, 'likable');
     }
 
-    
     public function likesCount(): int
     {
         return $this->likes()->count();
     }
-
-
 
     public function sheres(): HasMany
     {
         return $this->hasMany(Share::class);
     }
 
-
-    
-    
     public function sheresCount(): int
     {
         return $this->sheres()->count();
     }
-
 
     public function comments()
     {
         return $this->hasMany(Comment::class);
     }
 
-
-
-
-
-    
-    
     public function imageUrl(): string
     {
         return $this->imageExists()

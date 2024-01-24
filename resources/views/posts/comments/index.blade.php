@@ -10,7 +10,7 @@
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
                 <div class="fixed-width bg-gray-200 dark:bg-gray-700 rounded-md p-4 mb-4">
                     <div class="font-semibold text-lg text-gray-800 dark:text-gray-200">
-                        <x-nav-link :href="route('users.showProfil', ['user' => $post->user->id])">
+                        <x-nav-link :href="route('users.show', ['user' => $post->user->id])">
                             {{ $post->user->name }}
                         </x-nav-link>
                     </div>
@@ -48,46 +48,58 @@
 
                     @if($post->comments)
     @foreach($post->comments as $comment)
+    <x-nav-link :href="route('users.show', ['user' => $comment->user->id])">
+                        {{ $comment->user->name }}
+                
+                    </x-nav-link>
         <div class="bg-gray-300 p-2 mt-2 rounded">
+            
             @if($comment->user)
                 <div class="font-semibold text-gray-800 dark:text-gray-200">
+                 
                 <div class="flex justify-end mb-2">
-                            <a href="{{ route('comments.edit', ['comment' => $comment->id]) }}" class="flex items-center text-gray-600 mr-2">
-                                <i class="fa-solid fa-pen"></i>
-                                Edit
-                            </a>
+         
+                @can('edit', $comment)
+    <a href="{{ route('comments.edit', ['comment' => $comment->id]) }}" class="flex items-center text-gray-600 mr-2">
+        <i class="fa-solid fa-pen"></i>
+        Edit
+    </a>
+@endcan
 
-                            <button class="flex items-center text-gray-600 delete" data-post-id="{{ $post->id }}" data-comment-id="{{ $comment->id }}" data-type="comment">
-    <i class="fa-regular fa-trash-can">Delete</i>
-</button>
+
+                            @if(Auth::check() && (Auth::user()->isAdmin() || Auth::user()->id === $comment->user_id))
+    <button class="flex items-center text-gray-600 delete" data-post-id="{{ $post->id }}" data-comment-id="{{ $comment->id }}" data-type="comment">
+        <i class="fa-regular fa-trash-can"></i> Usuń
+    </button>
+@endif
+
 
                         </div>
-                    <x-nav-link :href="route('users.showProfil', ['user' => $comment->user->id])">
-                        {{ $comment->user->name }}
-                        @if($comment->created_at != $comment->updated_at)
-            (edited)
-        @endif
-                    </x-nav-link>
+                  
                 </div>
             @endif
             <div class="text-gray-700 dark:text-gray-300">{{ $comment->temat }}</div>
             @if($comment->image_path)
                 <img src="{{ asset('storage/' . $comment->image_path) }}" alt="Obraz komentarza" class="max-w-full mt-2 rounded-md">
             @endif
-        </div>
-        <div class="flex items-center mt-4">
-        <form action="{{ route('comments.like', $comment->id) }}" method="post">
-                @csrf
-    <button type="submit" class="flex items-center text-gray-600 mr-2">
-        @if(Auth::user()->likes()->where('comment_id', $comment->id)->exists())
+
+            <form class="like-form" data-post-id="{{ $post->id }}">
+    @csrf
+    <button type="submit" class="flex items-center text-gray-600 mr-2 like">
+        @if(Auth::user()->likes()->where('likable_id', $post->id)->where('likable_type', 'App\Models\Post')->exists())
             <i class="fa-solid fa-thumbs-up mr-1"></i>
         @else
             <i class="fa-regular fa-thumbs-up mr-1"></i>
         @endif
-        <span class="text-gray-600 mr-2">{{ $comment->likesCount() }} polubień</span>
+        <span class="text-gray-600 mr-2 likes-count">{{ $post->likesCount() }} likes</span>
     </button>
 </form>
-                            </div>
+
+
+        
+
+
+
 
     @endforeach
 @endif
@@ -100,9 +112,8 @@
 
 
     @section('javascript')
-    
-<script src="{{ asset('js/deleteCom.js') }}">
- 
+        <script src="{{ asset('js/deleteCom.js') }}"></script>
+        <script src="{{ asset('js/likeCom.js') }}"></script>
     @endsection
 
 </x-app-layout>

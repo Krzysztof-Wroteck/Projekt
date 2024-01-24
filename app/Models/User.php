@@ -3,12 +3,13 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use App\Enums\UserRole;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
-use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class User extends Authenticatable
 {
@@ -45,10 +46,12 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
     ];
+
     public function likes()
     {
         return $this->hasMany(Like::class);
     }
+
     public function sheres(): HasMany
     {
         return $this->hasMany(Share::class);
@@ -58,7 +61,6 @@ class User extends Authenticatable
     {
         return $this->hasMany(Post::class);
     }
-
 
     public function followers(): BelongsToMany
     {
@@ -71,5 +73,9 @@ class User extends Authenticatable
         return $this->belongsToMany(User::class, 'followers', 'follower_id', 'following_id')
             ->withTimestamps();
     }
-    
+
+    public function isAdmin()
+    {
+        return $this->role === UserRole::ADMIN;
+    }
 }

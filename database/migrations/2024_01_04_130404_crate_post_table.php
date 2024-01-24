@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('temat');
             $table->foreignId('user_id')
-                ->constrained('users') 
+                ->constrained('users')
                 ->onDelete('no action');
             $table->rememberToken();
             $table->timestamps();

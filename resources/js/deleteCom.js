@@ -1,34 +1,24 @@
 $(document).ready(function() {
     $('.delete').on('click', function() {
-        const postId = $(this).data('post-id');
-        const commentId = $(this).data('comment-id');
-        const itemType = $(this).data('type');
+      const postId = $(this).data('post-id');
+const commentId = $(this).data('comment-id');
         const swalWithBootstrapButtons = Swal.mixin({
-            customClass: {
-                confirmButton: "btn btn-success",
-                cancelButton: "btn btn-danger"
-            },
             buttonsStyling: false
         });
 
-        const confirmationMessage = (itemType === 'comment') ? 'Czy na pewno chcesz usunąć ten komentarz?' : 'Czy na pewno chcesz usunąć ten post?';
-
         swalWithBootstrapButtons.fire({
-            title: confirmationMessage,
+            title: "Are you sure you want to delete this comment?",
             icon: "warning",
             showCancelButton: true,
-            confirmButtonText: "Tak",
-            cancelButtonText: "Nie",
+            confirmButtonText: "Yes",
+            cancelButtonText: "No",
+            customClass: {
+                confirmButton: 'btn btn-success styled-button',
+                cancelButton: 'btn btn-danger styled-button'
+            },
             reverseButtons: true
         }).then((result) => {
             if (result.isConfirmed) {
-                let url;
-                if (itemType === 'comment') {
-                    url = `'/api/posts/${postId}/comments' + commentId`;
-                } else {
-                    url = `/api/posts/${postId}`;
-                }
-
                 $.ajax({
                     method: "DELETE",
                     url: `/api/posts/${postId}/comments/${commentId}`,
@@ -40,7 +30,7 @@ $(document).ready(function() {
                     if (data.status === 'success') {
                         window.location.reload();
                     } else {
-                        Swal.fire("Error", "Wystąpił błąd podczas usuwania.", "error");
+                        Swal.fire("Error", "An error occurred while deleting.", "error");
                     }
                 }).fail(function(data) {
                     Swal.fire("Error", data.responseJSON.message, data.responseJSON.status);

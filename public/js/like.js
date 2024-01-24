@@ -17,32 +17,38 @@
 /******/ 	
 /************************************************************************/
 var __webpack_exports__ = {};
-/*!********************************!*\
-  !*** ./resources/js/delete.js ***!
-  \********************************/
+/*!******************************!*\
+  !*** ./resources/js/like.js ***!
+  \******************************/
 __webpack_require__.r(__webpack_exports__);
 $(document).ready(function () {
-  $('.delete').on('click', function () {
-    var postId = $(this).data('id');
+  $('.like').on('click', function (event) {
+    event.preventDefault();
+    var postId = $(this).closest('.like-form').find('input[name="post_id"]').val();
     var csrfToken = $('meta[name="csrf-token"]').attr('content');
     var swalWithBootstrapButtons = Swal.mixin({
+      customClass: {
+        confirmButton: 'btn btn-success styled-button',
+        cancelButton: 'btn btn-danger styled-button'
+      },
       buttonsStyling: false
     });
     swalWithBootstrapButtons.fire({
-      title: "Are you sure you want to delete this post?",
-      icon: "warning",
+      title: "Are you sure you want to like/dislike this post??",
+      icon: "question",
       showCancelButton: true,
-      confirmButtonText: "Yes",
+      confirmButtonText: "Yes, like/dislike this post",
       cancelButtonText: "No",
       customClass: {
         confirmButton: 'btn btn-success styled-button',
         cancelButton: 'btn btn-danger styled-button'
       },
-      reverseButtons: true
+      reverseButtons: true,
+      buttonsStyling: false
     }).then(function (result) {
       if (result.isConfirmed) {
         $.ajax({
-          method: "DELETE",
+          method: "POST",
           url: '/api/posts/list/' + postId,
           headers: {
             'Accept': 'application/json',
@@ -50,9 +56,11 @@ $(document).ready(function () {
           }
         }).done(function (data) {
           if (data.status === 'success') {
-            window.location.reload();
+            swalWithBootstrapButtons.fire('Sukces!', 'this post has been liked/unliked', 'success').then(function () {
+              location.reload();
+            });
           } else {
-            Swal.fire("Error", "Error.", "error");
+            Swal.fire("Error", "An error occurred while liking/unliking.", "error");
           }
         }).fail(function (data) {
           Swal.fire("Error", data.responseJSON.message, data.responseJSON.status);
