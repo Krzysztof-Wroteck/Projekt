@@ -142,9 +142,7 @@ class PostController extends Controller
     {
         $user = Auth::user();
 
-        if (! $post) {
-            return response()->json(['status' => 'error', 'message' => 'Post not found'], 404);
-        }
+       
 
         $existingShere = $user->sheres()->where('post_id', $post->id)->exists();
 

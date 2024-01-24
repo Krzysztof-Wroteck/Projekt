@@ -115,10 +115,7 @@ class CommentController extends Controller
 
     public function like(Post $post, Comment $comment): JsonResponse
     {
-        if (! $comment) {
-            return response()->json(['status' => 'error', 'message' => 'Comment not found'], 404);
-        }
-
+        
         $user = Auth::user();
 
         try {
