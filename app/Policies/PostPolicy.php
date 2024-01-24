@@ -10,16 +10,10 @@ class PostPolicy
     /**
      * Create a new policy instance.
      */
-    public function __construct()
+    public function deletePost(User $user, Post $post)
     {
-        //
-    }
-
-    public function deletePost(User $user, $postId)
-    {
-        $post = Post::findOrFail($postId);
-
-        return $user->isAdmin() || $user;
+      
+        return $user->isAdmin() || $user->id === $post->user_id;
     }
 
     public function edit(User $user, Post $post)

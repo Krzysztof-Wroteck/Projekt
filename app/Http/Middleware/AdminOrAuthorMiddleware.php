@@ -2,7 +2,6 @@
 
 namespace App\Http\Middleware;
 
-use App\Enums\UserRole;
 use Closure;
 use Illuminate\Http\Request;
 
@@ -12,10 +11,13 @@ class AdminOrAuthorMiddleware
     {
         $user = $request->user();
 
-        if ($user && ($user->isAdmin() || $user->role === UserRole::USER)) {
+        if ($user && ($user->isAdmin() || $user->id === $request->route('post')->user_id||$user->id === $request->route('comment')->user_id)) {
             return $next($request);
         }
 
-        abort(403, 'Brak uprawnień.');
+        return response()->json([
+            'status' => 'error',
+            'message' => 'User not authenticated.',
+        ])->setStatusCode(401);
     }
 }

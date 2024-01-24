@@ -39,7 +39,7 @@ class CommentController extends Controller
 
         $comment = $post->comments()->create($commentData);
 
-        return redirect()->route('comments.index', $post->id)->with('success', 'Komentarz został dodany.');
+        return redirect()->route('comments.index', $post->id)->with('success', 'Comment add.');
     }
 
     public function edit(Comment $comment)
@@ -81,7 +81,7 @@ class CommentController extends Controller
 
         $comment->update($commentData);
 
-        return redirect()->route('comments.index', $post->id)->with('success', 'Komentarz został zaktualizowany.');
+        return redirect()->route('comments.index', $post->id)->with('success', ' Comment update.');
     }
 
     public function destroy(Post $post, Comment $comment): JsonResponse
@@ -99,7 +99,7 @@ class CommentController extends Controller
 
                 $comment->delete();
 
-                Session::flash('success', 'Udało się usunąć komentarz.');
+                Session::flash('success', 'Comment destroy.');
 
                 return response()->json([
                     'status' => 'success',
@@ -113,20 +113,16 @@ class CommentController extends Controller
 
                 return response()->json([
                     'status' => 'error',
-                    'message' => 'Wystąpił błąd!',
+                    'message' => 'Error!',
                 ])->setStatusCode(500);
             }
         }
 
-        return response()->json([
-            'status' => 'error',
-            'message' => 'Brak autoryzacji.',
-        ])->setStatusCode(401);
     }
 
-    public function like($postId, $commentId): JsonResponse
+    public function like( Comment $comment): JsonResponse
     {
-        $comment = Comment::find($commentId);
+    
 
         if (! $comment) {
             return response()->json(['status' => 'error', 'message' => 'Comment not found'], 404);
@@ -134,9 +130,7 @@ class CommentController extends Controller
 
         $user = Auth::user();
 
-        if (! $user) {
-            return response()->json(['status' => 'error', 'message' => 'User not authenticated'], 401);
-        }
+       
 
         try {
             $existingLike = $user->likes()->where('comment_id', $comment->id)->exists();

@@ -61,14 +61,5 @@ $(document).ready(function () {
     });
   });
 });
-document.addEventListener("DOMContentLoaded", function () {
-  var menu = document.getElementById("menu");
-  menu.addEventListener("mouseenter", function () {
-    this.classList.add("expanded");
-  });
-  menu.addEventListener("mouseleave", function () {
-    this.classList.remove("expanded");
-  });
-});
 /******/ })()
 ;

@@ -43,7 +43,7 @@ class Kernel extends HttpKernel
             \Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful::class,
             'throttle:api',
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
-            \App\Http\Middleware\VerifyCsrfToken::class, // Dodane dla CSRF, usuń, jeśli nie korzystasz z CSRF w twoim API
+            \App\Http\Middleware\VerifyCsrfToken::class,
         ],
     ];
 

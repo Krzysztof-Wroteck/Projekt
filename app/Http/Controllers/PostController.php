@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Middleware\AdminOrAuthorMiddleware;
 use App\Models\Like;
 use App\Models\Post;
 use App\Models\Share;
@@ -88,7 +89,7 @@ class PostController extends Controller
             $post->update(['image_path' => $imagePath]);
         }
 
-        return redirect()->route('users.posts', ['user' => $post->user_id])->with('success', 'Post został pomyślnie zaktualizowany.');
+        return redirect()->route('users.posts', ['user' => $post->user_id])->with('success', 'Post add.');
     }
 
     public function store(Request $request)
@@ -108,7 +109,7 @@ class PostController extends Controller
 
         Post::create($request->all());
 
-        return redirect()->route('users.posts', ['user' => $user_id])->with('success', 'Post został pomyślnie dodany.');
+        return redirect()->route('users.posts', ['user' => $user_id])->with('success', 'Post add.');
     }
 
     public function likePost(Post $post): JsonResponse
@@ -136,11 +137,6 @@ class PostController extends Controller
 
             return response()->json(['status' => 'error', 'message' => $e->getMessage()], 500);
         }
-    }
-
-    public function __construct()
-    {
-        $this->middleware('auth:sanctum')->only('likePost');
     }
 
     public function sherePost(Post $post): JsonResponse
@@ -194,25 +190,23 @@ class PostController extends Controller
                 $post->comments()->delete();
                 $post->delete();
 
-                Session::flash('success', 'Udało się usunąć post.');
+                Session::flash('success', 'Post destroy.');
 
                 return response()->json(['status' => 'success']);
             } catch (\Exception $e) {
                 \Log::error($e);
 
-                if ($post->imageExists()) {
-                }
-
                 return response()->json([
                     'status' => 'error',
-                    'message' => 'Wystąpił błąd!',
+                    'message' => 'Error!',
                 ])->setStatusCode(500);
             }
         }
 
-        return response()->json([
-            'status' => 'error',
-            'message' => 'Brak autoryzacji.',
-        ])->setStatusCode(401);
+    }
+
+    public function __construct()
+    {
+        $this->middleware(AdminOrAuthorMiddleware::class)->only('destroy');
     }
 }

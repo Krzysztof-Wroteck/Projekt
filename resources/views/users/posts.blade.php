@@ -109,7 +109,7 @@
         <span class="text-gray-600 mr-2 sheres-count">{{ $post->sheresCount() }} sheres</span>
     </button>
 </form>
-                                    <button class="flex items-center text-gray-600">
+  <button class="flex items-center text-gray-600">
         <i class="fa-regular fa-pen-to-square mr-1"></i>
         <a href="{{ route('comments.index', $post->id) }}" class="text-gray-600">{{ $post->comments()->count() }} Comment</a>
     </button>

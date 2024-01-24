@@ -10,29 +10,27 @@ use Illuminate\Support\Facades\Auth;
 class UserController extends Controller
 {
     public function usersPosts(User $user)
-    {
-        $followingIds = $user->following->pluck('id')->merge([$user->id]);
+{
+    $posts = Post::whereIn('user_id', $user->following->pluck('id'))
+        ->orWhere('user_id', $user->id) 
+        ->orWhereHas('sheres', function ($query) use ($user) {
+            $query->where('user_id', $user->id);
+        })
+        ->orderBy('created_at', 'desc')
+        ->get();
 
-        $posts = Post::whereIn('user_id', $followingIds)
-            ->orWhereHas('sheres', function ($query) use ($user) {
-                $query->where('user_id', $user->id);
-            })
-            ->orderBy('created_at', 'desc')
-            ->get();
-
-        return view('users.posts', compact('user', 'posts'));
-    }
+    return view('users.posts', compact('user', 'posts'));
+}
 
     public function showProfil(User $user)
     {
-        $followingIds = $user->following->pluck('id')->merge([$user->id]);
-
-        $posts = Post::whereIn('user_id', $followingIds)
-            ->orWhereHas('sheres', function ($query) use ($user) {
-                $query->where('user_id', $user->id);
-            })
-            ->orderBy('created_at', 'desc')
-            ->get();
+        $posts = Post::whereIn('user_id', $user->following->pluck('id'))
+        ->orWhere('user_id', $user->id) 
+        ->orWhereHas('sheres', function ($query) use ($user) {
+            $query->where('user_id', $user->id);
+        })
+        ->orderBy('created_at', 'desc')
+        ->get();
 
         return view('users.showProfil', compact('user', 'posts'));
     }
