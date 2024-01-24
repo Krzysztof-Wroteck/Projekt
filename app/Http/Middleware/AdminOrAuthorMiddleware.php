@@ -11,7 +11,7 @@ class AdminOrAuthorMiddleware
     {
         $user = $request->user();
 
-        if ($user && ($user->isAdmin() || $user->id === $request->route('post')->user_id||$user->id === $request->route('comment')->user_id)) {
+        if ($user && ($user->isAdmin() || $user->id === $request->route('post')->user_id || $user->id === $request->route('comment')->user_id)) {
             return $next($request);
         }
 

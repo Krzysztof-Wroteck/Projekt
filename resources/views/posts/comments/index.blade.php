@@ -10,7 +10,7 @@
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
                 <div class="fixed-width bg-gray-200 dark:bg-gray-700 rounded-md p-4 mb-4">
                     <div class="font-semibold text-lg text-gray-800 dark:text-gray-200">
-                        <x-nav-link :href="route('users.showProfil', ['user' => $post->user->id])">
+                        <x-nav-link :href="route('users.show', ['user' => $post->user->id])">
                             {{ $post->user->name }}
                         </x-nav-link>
                     </div>
@@ -48,7 +48,7 @@
 
                     @if($post->comments)
     @foreach($post->comments as $comment)
-    <x-nav-link :href="route('users.showProfil', ['user' => $comment->user->id])">
+    <x-nav-link :href="route('users.show', ['user' => $comment->user->id])">
                         {{ $comment->user->name }}
                 
                     </x-nav-link>

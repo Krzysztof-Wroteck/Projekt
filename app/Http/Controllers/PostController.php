@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Middleware\AdminOrAuthorMiddleware;
 use App\Models\Like;
 use App\Models\Post;
 use App\Models\Share;
@@ -89,7 +88,7 @@ class PostController extends Controller
             $post->update(['image_path' => $imagePath]);
         }
 
-        return redirect()->route('users.posts', ['user' => $post->user_id])->with('success', 'Post add.');
+        return redirect()->route('users.index', ['user' => $post->user_id])->with('success', 'Post add.');
     }
 
     public function store(Request $request)
@@ -109,7 +108,7 @@ class PostController extends Controller
 
         Post::create($request->all());
 
-        return redirect()->route('users.posts', ['user' => $user_id])->with('success', 'Post add.');
+        return redirect()->route('users.index', ['user' => $user_id])->with('success', 'Post add.');
     }
 
     public function likePost(Post $post): JsonResponse
@@ -203,10 +202,5 @@ class PostController extends Controller
             }
         }
 
-    }
-
-    public function __construct()
-    {
-        $this->middleware(AdminOrAuthorMiddleware::class)->only('destroy');
     }
 }

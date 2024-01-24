@@ -27,7 +27,7 @@
                 </div>
 
                 @foreach($posts as $post)
-                <x-nav-link :href="route('users.showProfil', ['user' => $post->user->id])">
+                <x-nav-link :href="route('users.show', ['user' => $post->user->id])">
                        {{ $post->user->name }}
                    
                 </x-nav-link>

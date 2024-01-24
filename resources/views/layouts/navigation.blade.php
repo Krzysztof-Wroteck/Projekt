@@ -21,7 +21,7 @@
                     <x-nav-link href="{{ route('posts.index') }}" >
                       Posty
 </x-nav-link>
-<x-nav-link href="{{ route('users.posts', ['user' => Auth::id()]) }}">          
+<x-nav-link href="{{ route('users.index', ['user' => Auth::id()]) }}">          
                 Twój Profil
 </x-nav-link>
                 </div>

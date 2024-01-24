@@ -107,10 +107,6 @@ class CommentController extends Controller
             } catch (\Exception $e) {
                 \Log::error($e);
 
-                if ($comment->imageExists()) {
-                    \Log::info('Error occurred. Not deleting image from storage.');
-                }
-
                 return response()->json([
                     'status' => 'error',
                     'message' => 'Error!',
@@ -120,17 +116,14 @@ class CommentController extends Controller
 
     }
 
-    public function like( Comment $comment): JsonResponse
+    public function like($postId, Comment $comment): JsonResponse
     {
-    
 
         if (! $comment) {
             return response()->json(['status' => 'error', 'message' => 'Comment not found'], 404);
         }
 
         $user = Auth::user();
-
-       
 
         try {
             $existingLike = $user->likes()->where('comment_id', $comment->id)->exists();

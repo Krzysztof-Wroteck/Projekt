@@ -9,43 +9,43 @@ use Illuminate\Support\Facades\Auth;
 
 class UserController extends Controller
 {
-    public function usersPosts(User $user)
-{
-    $posts = Post::whereIn('user_id', $user->following->pluck('id'))
-        ->orWhere('user_id', $user->id) 
-        ->orWhereHas('sheres', function ($query) use ($user) {
-            $query->where('user_id', $user->id);
-        })
-        ->orderBy('created_at', 'desc')
-        ->get();
-
-    return view('users.posts', compact('user', 'posts'));
-}
-
-    public function showProfil(User $user)
+    public function index(User $user)
     {
         $posts = Post::whereIn('user_id', $user->following->pluck('id'))
-        ->orWhere('user_id', $user->id) 
-        ->orWhereHas('sheres', function ($query) use ($user) {
-            $query->where('user_id', $user->id);
-        })
-        ->orderBy('created_at', 'desc')
-        ->get();
+            ->orWhere('user_id', $user->id)
+            ->orWhereHas('sheres', function ($query) use ($user) {
+                $query->where('user_id', $user->id);
+            })
+            ->orderBy('created_at', 'desc')
+            ->get();
 
-        return view('users.showProfil', compact('user', 'posts'));
+        return view('users.index', compact('user', 'posts'));
+    }
+
+    public function show(User $user)
+    {
+        $posts = Post::whereIn('user_id', $user->following->pluck('id'))
+            ->orWhere('user_id', $user->id)
+            ->orWhereHas('sheres', function ($query) use ($user) {
+                $query->where('user_id', $user->id);
+            })
+            ->orderBy('created_at', 'desc')
+            ->get();
+
+        return view('users.show', compact('user', 'posts'));
     }
 
     public function follow(User $user): RedirectResponse
     {
         Auth::user()->following()->toggle($user);
 
-        return redirect()->route('users.showProfil', ['user' => $user])->with('success', 'Obserwacja została pomyślnie dodana.');
+        return redirect()->route('users.show', ['user' => $user])->with('success', 'Obserwacja została pomyślnie dodana.');
     }
 
     public function unfollow(User $user): RedirectResponse
     {
         Auth::user()->following()->toggle($user);
 
-        return redirect()->route('users.showProfil', ['user' => $user])->with('success', 'Obserwacja została pomyślnie usunięta.');
+        return redirect()->route('users.show', ['user' => $user])->with('success', 'Obserwacja została pomyślnie usunięta.');
     }
 }
