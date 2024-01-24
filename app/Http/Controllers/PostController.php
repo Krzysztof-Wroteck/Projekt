@@ -28,7 +28,7 @@ class PostController extends Controller
                     $queryBuilder->whereHas('user', function ($q) use ($hashtag) {
                         $q->whereRaw('BINARY name LIKE ?', ['%'.$hashtag.'%']);
                     })->orWhere(function ($q) use ($hashtag) {
-                        $q->whereRaw('BINARY Temat LIKE ?', ['%'.$hashtag.'%']);
+                        $q->whereRaw('BINARY temat LIKE ?', ['%'.$hashtag.'%']);
                     });
                 }
             })
@@ -67,15 +67,15 @@ class PostController extends Controller
     public function update(Request $request, Post $post)
     {
         $request->validate([
-            'Temat' => 'required|string',
+            'temat' => 'required|string',
             'image' => 'image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
         $post->update([
-            'Temat' => $request->input('Temat'),
+            'temat' => $request->input('temat'),
         ]);
 
-        if ($request->has('remove_image') && $request->input('remove_image') == 'on') {
+        if ($request->has('remove_image') && $request->input('remove_image') == true) {
             if ($post->image_path) {
                 Storage::disk('public')->delete($post->image_path);
             }
@@ -94,7 +94,7 @@ class PostController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'Temat' => 'required|string',
+            'temat' => 'required|string',
             'image' => 'image|mimes:jpeg,png,jpg,gif,mp4|max:2048',
         ]);
 
@@ -116,12 +116,12 @@ class PostController extends Controller
         $user = Auth::user();
 
         try {
-            $existingLike = $user->likes()->where('post_id', $post->id)->exists();
+            $existingLike = $user->likes()->where('likable_id', $post->id)->where('likable_type', Post::class)->exists();
 
             if ($existingLike) {
-                $user->likes()->where('post_id', $post->id)->delete();
+                $user->likes()->where('likable_id', $post->id)->where('likable_type', Post::class)->delete();
             } else {
-                $like = new Like(['post_id' => $post->id]);
+                $like = new Like(['likable_id' => $post->id, 'likable_type' => Post::class]);
                 $user->likes()->save($like);
             }
 

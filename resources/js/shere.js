@@ -13,11 +13,11 @@ $(document).ready(function () {
         });
 
         swalWithBootstrapButtons.fire({
-            title: "Jesteś pewny, że chcesz udostępnić/odudostępnić ten post?",
+            title: "Are you sure you want to share/unshare this post?",
             icon: "question",
             showCancelButton: true,
-            confirmButtonText: "Tak, udostępnij/odudostępnij post!",
-            cancelButtonText: "Nie, anuluj",
+            confirmButtonText: "Yes, share/unshare this post!",
+            cancelButtonText: "No",
             customClass: {
                 confirmButton: 'btn btn-success styled-button',
                 cancelButton: 'btn btn-danger styled-button'
@@ -36,13 +36,13 @@ $(document).ready(function () {
                     if (data.status === 'success') {
                         swalWithBootstrapButtons.fire(
                             'Sukces!',
-                            'Post został udostępniony/odudostępiony.',
+                            'this post  has been share/unshare.',
                             'success'
                         ).then(() => {
                             location.reload();
                         });
                     } else {
-                        Swal.fire("Error", "Wystąpił błąd podczas udostępniania.", "error");
+                        Swal.fire("Error", "An error occurred while  share/unshare.", "error");
                     }
                 }).fail(function (data) {
                     Swal.fire("Error", data.responseJSON.message, data.responseJSON.status);

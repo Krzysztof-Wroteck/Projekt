@@ -34,11 +34,11 @@ $(document).ready(function () {
       buttonsStyling: false
     });
     swalWithBootstrapButtons.fire({
-      title: "Jesteś pewny, że chcesz polubić/oblud ten post?",
+      title: "Are you sure you want to like/dislike this post??",
       icon: "question",
       showCancelButton: true,
-      confirmButtonText: "Tak, polub/odlub komentarz",
-      cancelButtonText: "Nie, anuluj",
+      confirmButtonText: "Yes, like/dislike this post",
+      cancelButtonText: "No",
       customClass: {
         confirmButton: 'btn btn-success styled-button',
         cancelButton: 'btn btn-danger styled-button'
@@ -56,11 +56,11 @@ $(document).ready(function () {
           }
         }).done(function (data) {
           if (data.status === 'success') {
-            swalWithBootstrapButtons.fire('Sukces!', 'Post został polubiony/odlubić.', 'success').then(function () {
+            swalWithBootstrapButtons.fire('Sukces!', 'this post has been liked/unliked', 'success').then(function () {
               location.reload();
             });
           } else {
-            Swal.fire("Error", "Wystąpił błąd podczas polubienia.", "error");
+            Swal.fire("Error", "An error occurred while liking/unliking.", "error");
           }
         }).fail(function (data) {
           Swal.fire("Error", data.responseJSON.message, data.responseJSON.status);

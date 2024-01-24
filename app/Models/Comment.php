@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Support\Facades\Storage;
 
 class Comment extends Model
@@ -36,9 +36,9 @@ class Comment extends Model
         return $this->belongsTo(Post::class);
     }
 
-    public function likes(): HasMany
+    public function likes(): MorphMany
     {
-        return $this->hasMany(Like::class);
+        return $this->morphMany(Like::class, 'likable');
     }
 
     public function likesCount(): int

@@ -83,21 +83,19 @@
                 <img src="{{ asset('storage/' . $comment->image_path) }}" alt="Obraz komentarza" class="max-w-full mt-2 rounded-md">
             @endif
 
-
-            <form class="like-form" data-comment-id="{{ $comment->id }}" data-post-id="{{ $post->id }}">
+            <form class="like-form" data-post-id="{{ $post->id }}">
     @csrf
     <button type="submit" class="flex items-center text-gray-600 mr-2 like">
-
-        @if(Auth::user()->likes()->where('comment_id', $comment->id)->exists())
+        @if(Auth::user()->likes()->where('likable_id', $post->id)->where('likable_type', 'App\Models\Post')->exists())
             <i class="fa-solid fa-thumbs-up mr-1"></i>
         @else
             <i class="fa-regular fa-thumbs-up mr-1"></i>
         @endif
-        <span class="text-gray-600 mr-2 likes-count">{{ $comment->likesCount() }} likes</span>
+        <span class="text-gray-600 mr-2 likes-count">{{ $post->likesCount() }} likes</span>
     </button>
 </form>
-        </div>
-      
+
+
         
 
 

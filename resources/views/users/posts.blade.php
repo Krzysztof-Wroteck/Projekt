@@ -81,18 +81,18 @@
                                 @endif
 
                                 <div class="flex items-center mt-4">
-                                <form class="like-form" action="{{ route('posts.like.api', $post->id) }}" method="post" data-post-id="{{ $post->id }}">
-    @csrf
-    <input type="hidden" name="post_id" value="{{ $post->id }}">
-    <button type="submit" class="flex items-center text-gray-600 mr-2 like">
-        @if(Auth::user()->likes()->where('post_id', $post->id)->exists())
-            <i class="fa-solid fa-thumbs-up mr-1"></i>
-        @else
-            <i class="fa-regular fa-thumbs-up mr-1"></i>
-        @endif
-        <span class="text-gray-600 mr-2 likes-count">{{ $post->likesCount() }} likes</span>
-    </button>
-</form>
+                                <form class="like-form" data-post-id="{{ $post->id }}">
+                @csrf
+               <input type="hidden" name="post_id" value="{{ $post->id }}">
+             <button type="submit" class="flex items-center text-gray-600 mr-2 like">
+              @if(Auth::user()->likes()->where('likable_id', $post->id)->where('likable_type', 'App\Models\Post')->exists())
+              <i class="fa-solid fa-thumbs-up mr-1"></i>
+            @else
+                <i class="fa-regular fa-thumbs-up mr-1"></i>
+               @endif
+             <span class="text-gray-600 mr-2 likes-count">{{ $post->likesCount() }} likes</span>
+        </button>
+          </form>
 
 
 

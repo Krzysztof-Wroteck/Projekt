@@ -7,11 +7,11 @@ const commentId = $(this).data('comment-id');
         });
 
         swalWithBootstrapButtons.fire({
-            title: "Jesteś pewny, że chcesz usunąć ten komentarz?",
+            title: "Are you sure you want to delete this comment?",
             icon: "warning",
             showCancelButton: true,
-            confirmButtonText: "Tak",
-            cancelButtonText: "Nie",
+            confirmButtonText: "Yes",
+            cancelButtonText: "No",
             customClass: {
                 confirmButton: 'btn btn-success styled-button',
                 cancelButton: 'btn btn-danger styled-button'
@@ -30,7 +30,7 @@ const commentId = $(this).data('comment-id');
                     if (data.status === 'success') {
                         window.location.reload();
                     } else {
-                        Swal.fire("Error", "Wystąpił błąd podczas usuwania.", "error");
+                        Swal.fire("Error", "An error occurred while deleting.", "error");
                     }
                 }).fail(function(data) {
                     Swal.fire("Error", data.responseJSON.message, data.responseJSON.status);

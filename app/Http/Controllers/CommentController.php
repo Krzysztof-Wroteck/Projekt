@@ -73,8 +73,7 @@ class CommentController extends Controller
                 Storage::disk('public')->delete($comment->image_path);
             }
 
-            $imagePath = $request->file('image')->store('comments', 'public');
-            $commentData['image_path'] = $imagePath;
+            $commentData['image_path'] = $request->file('image')->store('comments', 'public');
         }
 
         $post = $comment->post;
@@ -89,36 +88,33 @@ class CommentController extends Controller
 
         $user = Auth::user();
 
-        if ($user && ($user->isAdmin() || $user->id === $comment->user_id)) {
-            try {
-                if ($comment->imageExists()) {
-                    Storage::disk('public')->delete($comment->image_path);
-                }
-
-                $comment->likes()->delete();
-
-                $comment->delete();
-
-                Session::flash('success', 'Comment destroy.');
-
-                return response()->json([
-                    'status' => 'success',
-                ]);
-            } catch (\Exception $e) {
-                \Log::error($e);
-
-                return response()->json([
-                    'status' => 'error',
-                    'message' => 'Error!',
-                ])->setStatusCode(500);
+        try {
+            if ($comment->imageExists()) {
+                Storage::disk('public')->delete($comment->image_path);
             }
+
+            $comment->likes()->delete();
+
+            $comment->delete();
+
+            Session::flash('success', 'Comment destroy.');
+
+            return response()->json([
+                'status' => 'success',
+            ]);
+        } catch (\Exception $e) {
+            \Log::error($e);
+
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Error!',
+            ])->setStatusCode(500);
         }
 
     }
 
-    public function like( Post $post, Comment $comment): JsonResponse
+    public function like(Post $post, Comment $comment): JsonResponse
     {
-
         if (! $comment) {
             return response()->json(['status' => 'error', 'message' => 'Comment not found'], 404);
         }
@@ -126,12 +122,12 @@ class CommentController extends Controller
         $user = Auth::user();
 
         try {
-            $existingLike = $user->likes()->where('comment_id', $comment->id)->exists();
+            $existingLike = $user->likes()->where('likable_id', $comment->id)->where('likable_type', Comment::class)->exists();
 
             if ($existingLike) {
-                $user->likes()->where('comment_id', $comment->id)->delete();
+                $user->likes()->where('likable_id', $comment->id)->where('likable_type', Comment::class)->delete();
             } else {
-                $like = new Like(['comment_id' => $comment->id]);
+                $like = new Like(['likable_id' => $comment->id, 'likable_type' => Comment::class]);
                 $user->likes()->save($like);
             }
 
@@ -142,7 +138,7 @@ class CommentController extends Controller
                 'likesCount' => $likesCount,
             ]);
         } catch (\Exception $e) {
-            \Log::error('Error in likeComment: '.$e->getMessage());
+            \Log::error('Error in like: '.$e->getMessage());
 
             return response()->json(['status' => 'error', 'message' => $e->getMessage()], 500);
         }

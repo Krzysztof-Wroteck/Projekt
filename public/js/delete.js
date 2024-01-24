@@ -29,11 +29,11 @@ $(document).ready(function () {
       buttonsStyling: false
     });
     swalWithBootstrapButtons.fire({
-      title: "Jesteś pewny, że chcesz usunąć ten post?",
+      title: "Are you sure you want to delete this post?",
       icon: "warning",
       showCancelButton: true,
-      confirmButtonText: "Tak",
-      cancelButtonText: "Nie",
+      confirmButtonText: "Yes",
+      cancelButtonText: "No",
       customClass: {
         confirmButton: 'btn btn-success styled-button',
         cancelButton: 'btn btn-danger styled-button'
