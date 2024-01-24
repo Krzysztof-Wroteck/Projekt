@@ -88,7 +88,7 @@ class PostController extends Controller
             $post->update(['image_path' => $imagePath]);
         }
 
-        return redirect()->route('users.index', ['user' => $post->user_id])->with('success', 'Post add.');
+        return redirect()->route('users.posts', ['user' => $post->user_id])->with('success', 'Post add.');
     }
 
     public function store(Request $request)
@@ -108,7 +108,7 @@ class PostController extends Controller
 
         Post::create($request->all());
 
-        return redirect()->route('users.index', ['user' => $user_id])->with('success', 'Post add.');
+        return redirect()->route('users.posts', ['user' => $user_id])->with('success', 'Post add.');
     }
 
     public function likePost(Post $post): JsonResponse

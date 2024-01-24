@@ -2,7 +2,7 @@ $(document).ready(function () {
     $('.like').on('click', function (event) {
         event.preventDefault();
         const commentId = $(this).closest('.like-form').data('comment-id');
-        const postId = $(this).closest('.like-form').data('post-id');
+        const post = $(this).closest('.like-form').data('post-id');
         
         const csrfToken = $('meta[name="csrf-token"]').attr('content');
 
@@ -30,7 +30,7 @@ $(document).ready(function () {
             if (result.isConfirmed) {
                 $.ajax({
                     method: "POST",
-                    url: `/api/posts/${postId}/comments/${commentId}/like`,
+                    url: `/api/posts/${post}/comments/${commentId}/like`,
                     headers: {
                         'Accept': 'application/json',
                         'X-CSRF-TOKEN': csrfToken

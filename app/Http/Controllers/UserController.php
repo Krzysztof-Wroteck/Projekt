@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Auth;
 
 class UserController extends Controller
 {
-    public function index(User $user)
+    public function posts(User $user)
     {
         $posts = Post::whereIn('user_id', $user->following->pluck('id'))
             ->orWhere('user_id', $user->id)
@@ -19,7 +19,7 @@ class UserController extends Controller
             ->orderBy('created_at', 'desc')
             ->get();
 
-        return view('users.index', compact('user', 'posts'));
+        return view('users.posts', compact('user', 'posts'));
     }
 
     public function show(User $user)

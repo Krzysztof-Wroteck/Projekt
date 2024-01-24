@@ -116,7 +116,7 @@ class CommentController extends Controller
 
     }
 
-    public function like($postId, Comment $comment): JsonResponse
+    public function like( Post $post, Comment $comment): JsonResponse
     {
 
         if (! $comment) {

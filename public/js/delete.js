@@ -52,7 +52,7 @@ $(document).ready(function () {
           if (data.status === 'success') {
             window.location.reload();
           } else {
-            Swal.fire("Error", "Wystąpił błąd podczas usuwania.", "error");
+            Swal.fire("Error", "Error.", "error");
           }
         }).fail(function (data) {
           Swal.fire("Error", data.responseJSON.message, data.responseJSON.status);

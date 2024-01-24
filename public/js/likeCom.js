@@ -25,7 +25,7 @@ $(document).ready(function () {
   $('.like').on('click', function (event) {
     event.preventDefault();
     var commentId = $(this).closest('.like-form').data('comment-id');
-    var postId = $(this).closest('.like-form').data('post-id');
+    var post = $(this).closest('.like-form').data('post-id');
     var csrfToken = $('meta[name="csrf-token"]').attr('content');
     var swalWithBootstrapButtons = Swal.mixin({
       customClass: {
@@ -49,7 +49,7 @@ $(document).ready(function () {
       if (result.isConfirmed) {
         $.ajax({
           method: "POST",
-          url: "/api/posts/".concat(postId, "/comments/").concat(commentId, "/like"),
+          url: "/api/posts/".concat(post, "/comments/").concat(commentId, "/like"),
           headers: {
             'Accept': 'application/json',
             'X-CSRF-TOKEN': csrfToken

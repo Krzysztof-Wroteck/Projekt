@@ -30,21 +30,26 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
-    Route::post('/posts', [PostController::class, 'store'])->name('posts.store');
-    Route::get('/posts/create', [PostController::class, 'create'])->name('posts.create');
-    Route::get('/posts/{post}/edit', [PostController::class, 'edit'])->name('posts.edit');
-    Route::put('/posts/{post}', [PostController::class, 'update'])->name('posts.update');
-    Route::get('/posts/list', [PostController::class, 'index'])->name('posts.index');
+    Route::prefix('posts')->group(function () {
 
-    Route::get('/posts/{post}/comments', [CommentController::class, 'index'])->name('comments.index');
-    Route::post('/posts/{post}/comments', [CommentController::class, 'store'])->name('posts.comments.store');
-    Route::get('/posts/comments/{comment}/edit', [CommentController::class, 'edit'])->name('comments.edit');
-    Route::put('/posts/comments/{comment}', [CommentController::class, 'update'])->name('comments.update');
+    Route::post('', [PostController::class, 'store'])->name('posts.store');
+    Route::get('/create', [PostController::class, 'create'])->name('posts.create');
+    Route::get('/{post}/edit', [PostController::class, 'edit'])->name('posts.edit');
+    Route::put('/{post}', [PostController::class, 'update'])->name('posts.update');
+    Route::get('/list', [PostController::class, 'index'])->name('posts.index');
 
-    Route::get('/users/{user}/posts', [UserController::class, 'index'])->name('users.index');
-    Route::get('/users/{user}/show', [UserController::class, 'show'])->name('users.show');
-    Route::post('/users/{user}/follow', [UserController::class, 'follow'])->name('users.follow');
-    Route::post('/users/{user}/unfollow', [UserController::class, 'unfollow'])->name('users.unfollow');
+    Route::get('/{post}/comments', [CommentController::class, 'index'])->name('comments.index');
+    Route::post('/{post}/comments', [CommentController::class, 'store'])->name('posts.comments.store');
+    Route::get('/comments/{comment}/edit', [CommentController::class, 'edit'])->name('comments.edit');
+    Route::put('/comments/{comment}', [CommentController::class, 'update'])->name('comments.update');
+
+});
+    Route::prefix('users')->group(function () {
+    Route::get('/{user}/posts', [UserController::class, 'posts'])->name('users.posts');
+    Route::get('/{user}/show', [UserController::class, 'show'])->name('users.show');
+    Route::post('/{user}/follow', [UserController::class, 'follow'])->name('users.follow');
+    Route::post('/{user}/unfollow', [UserController::class, 'unfollow'])->name('users.unfollow');
+});
 
 });
 
