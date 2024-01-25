@@ -20,7 +20,6 @@ class CommentController extends Controller
 
     public function store(StoreCommentRequest $request, Post $post)
     {
-        $request->validated();
 
         $user_id = Auth::id();
 
@@ -48,7 +47,6 @@ class CommentController extends Controller
 
     public function update(StoreCommentRequest $request, Comment $comment)
     {
-        $request->validated();
 
         $user_id = Auth::id();
 

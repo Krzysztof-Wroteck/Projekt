@@ -67,7 +67,6 @@ class PostController extends Controller
 
     public function update(StorePostRequest $request, Post $post)
     {
-        $request->validated();
 
         $imagePath = null;
 
@@ -94,7 +93,6 @@ class PostController extends Controller
 
     public function store(StorePostRequest $request)
     {
-        $request->validated();
 
         $user_id = Auth::id();
         $request->merge(['user_id' => $user_id]);
