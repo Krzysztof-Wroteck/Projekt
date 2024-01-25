@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StorePostRequest;
 use App\Models\Like;
 use App\Models\Post;
 use App\Models\Share;
@@ -11,7 +12,6 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\View\View;
-use App\Http\Requests\StorePostRequest;
 
 class PostController extends Controller
 {
@@ -69,7 +69,6 @@ class PostController extends Controller
     {
         $request->user()->fill($request->validated());
 
-
         $post->update([
             'temat' => $request->input('temat'),
         ]);
@@ -93,7 +92,6 @@ class PostController extends Controller
     public function store(StorePostRequest $request)
     {
         $request->user()->fill($request->validated());
-
 
         $user_id = Auth::id();
         $request->merge(['user_id' => $user_id]);
@@ -138,8 +136,6 @@ class PostController extends Controller
     public function sherePost(Post $post): JsonResponse
     {
         $user = Auth::user();
-
-       
 
         $existingShere = $user->sheres()->where('post_id', $post->id)->exists();
 
