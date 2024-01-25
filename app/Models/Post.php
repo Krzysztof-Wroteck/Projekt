@@ -14,7 +14,7 @@ class Post extends Model
     use HasFactory;
 
     protected $fillable = [
-        'temat',
+        'topic',
         'image_path',
         'user_id',
     ];

@@ -20,12 +20,12 @@ class CommentController extends Controller
 
     public function store(StoreCommentRequest $request, Post $post)
     {
-        $request->user()->fill($request->validated());
+        $request->validated();
 
         $user_id = Auth::id();
 
         $commentData = [
-            'temat' => $request->input('temat'),
+            'topic' => $request->input('topic'),
             'user_id' => $user_id,
         ];
 
@@ -48,12 +48,12 @@ class CommentController extends Controller
 
     public function update(StoreCommentRequest $request, Comment $comment)
     {
-        $request->user()->fill($request->validated());
+        $request->validated();
 
         $user_id = Auth::id();
 
         $commentData = [
-            'temat' => $request->input('temat'),
+            'topic' => $request->input('topic'),
             'user_id' => $user_id,
         ];
 

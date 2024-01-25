@@ -29,7 +29,7 @@ class PostController extends Controller
                     $queryBuilder->whereHas('user', function ($q) use ($hashtag) {
                         $q->whereRaw('BINARY name LIKE ?', ['%'.$hashtag.'%']);
                     })->orWhere(function ($q) use ($hashtag) {
-                        $q->whereRaw('BINARY temat LIKE ?', ['%'.$hashtag.'%']);
+                        $q->whereRaw('BINARY topic LIKE ?', ['%'.$hashtag.'%']);
                     });
                 }
             })
@@ -67,31 +67,34 @@ class PostController extends Controller
 
     public function update(StorePostRequest $request, Post $post)
     {
-        $request->user()->fill($request->validated());
+        $request->validated();
 
-        $post->update([
-            'temat' => $request->input('temat'),
-        ]);
+        $imagePath = null;
 
         if ($request->has('remove_image') && $request->input('remove_image') == true) {
             if ($post->image_path) {
                 Storage::disk('public')->delete($post->image_path);
+                $imagePath = null;
+
             }
             $post->update(['image_path' => null]);
         } elseif ($request->hasFile('image')) {
             if ($post->image_path) {
                 Storage::disk('public')->delete($post->image_path);
+
             }
             $imagePath = $request->file('image')->store('images', 'public');
-            $post->update(['image_path' => $imagePath]);
         }
+        $post->update([
+            'topic' => $request->input('topic'), 'image_path' => $imagePath,
+        ]);
 
         return redirect()->route('users.posts', ['user' => $post->user_id])->with('success', 'Post add.');
     }
 
     public function store(StorePostRequest $request)
     {
-        $request->user()->fill($request->validated());
+        $request->validated();
 
         $user_id = Auth::id();
         $request->merge(['user_id' => $user_id]);

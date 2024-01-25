@@ -12,8 +12,8 @@
                 @method('PUT') 
 
                 <div class="mb-4">
-                    <label for="temat" class="block text-gray-700 text-sm font-bold mb-2">Temat:</label>
-                    <input type="text" name="temat" value="{{ $post->temat }}" class="form-input border rounded-md p-2 w-full h-10" required>
+                    <label for="topic" class="block text-gray-700 text-sm font-bold mb-2">topic:</label>
+                    <input type="text" name="topic" value="{{ $post->topic }}" class="form-input border rounded-md p-2 w-full h-10" required>
                 </div>
 
                 <div class="mb-4">

@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('posts', function (Blueprint $table) {
             $table->id();
-            $table->string('temat');
+            $table->string('topic');
             $table->foreignId('user_id')
                 ->constrained('users')
                 ->onDelete('no action');

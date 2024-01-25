@@ -12,7 +12,7 @@ class PostFactory extends Factory
     public function definition()
     {
         return [
-            'temat' => $this->faker->sentence(),
+            'topic' => $this->faker->sentence(),
             'user_id' => \App\Models\User::factory(),
 
         ];

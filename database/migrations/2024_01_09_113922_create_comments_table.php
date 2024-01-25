@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('comments', function (Blueprint $table) {
             $table->id();
-            $table->string('temat');
+            $table->string('topic');
             $table->string('image_path', 150)->nullable();
             $table->foreignId('user_id')
                 ->constrained('users')

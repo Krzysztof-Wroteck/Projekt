@@ -14,7 +14,7 @@
                             {{ $post->user->name }}
                         </x-nav-link>
                     </div>
-                    <div class="text-gray-700 dark:text-gray-300">{{ $post->temat }}</div>
+                    <div class="text-gray-700 dark:text-gray-300">{{ $post->topic }}</div>
 
                     @if($post->image_path)
                             <div class="mt-4">
@@ -34,8 +34,8 @@
 
                         <form action="{{ route('posts.comments.store', $post->id) }}" method="post" class="mt-4" enctype="multipart/form-data">                        @csrf
                         <div class="mb-4">
-                            <label for="temat" class="block text-gray-700 text-sm font-bold mb-2">Treść komentarza:</label>
-                            <textarea name="temat" id="temat" rows="3" class="border rounded w-full px-3 py-2"></textarea>
+                            <label for="topic" class="block text-gray-700 text-sm font-bold mb-2">Treść komentarza:</label>
+                            <textarea name="topic" id="topic" rows="3" class="border rounded w-full px-3 py-2"></textarea>
                         </div>
                         <div class="mb-4">
                             <label for="image" class="block text-gray-700 text-sm font-bold mb-2">Załącz obraz:</label>
@@ -78,7 +78,7 @@
                   
                 </div>
             @endif
-            <div class="text-gray-700 dark:text-gray-300">{{ $comment->temat }}</div>
+            <div class="text-gray-700 dark:text-gray-300">{{ $comment->topic }}</div>
             @if($comment->image_path)
                 <img src="{{ asset('storage/' . $comment->image_path) }}" alt="Obraz komentarza" class="max-w-full mt-2 rounded-md">
             @endif

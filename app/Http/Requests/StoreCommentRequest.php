@@ -18,7 +18,7 @@ class StoreCommentRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'temat' => 'required|string',
+            'topic' => 'required|string',
             'image' => 'image|mimes:jpeg,png,jpg,gif,mp4|max:2048',
         ];
     }
