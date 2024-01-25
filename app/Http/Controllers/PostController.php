@@ -27,9 +27,9 @@ class PostController extends Controller
             $posts = Post::where(function ($queryBuilder) use ($hashtags) {
                 foreach ($hashtags as $hashtag) {
                     $queryBuilder->whereHas('user', function ($q) use ($hashtag) {
-                        $q->whereRaw('BINARY name LIKE ?', ['%'.$hashtag.'%']);
+                        $q->where('name', 'like', '%'.$hashtag.'%');
                     })->orWhere(function ($q) use ($hashtag) {
-                        $q->whereRaw('BINARY topic LIKE ?', ['%'.$hashtag.'%']);
+                        $q->where('topic', 'like', '%'.$hashtag.'%');
                     });
                 }
             })
