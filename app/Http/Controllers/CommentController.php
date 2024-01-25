@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreCommentRequest;
 use App\Models\Comment;
 use App\Models\Like;
 use App\Models\Post;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Storage;
@@ -18,17 +18,14 @@ class CommentController extends Controller
         return view('posts.comments.index', compact('post'));
     }
 
-    public function store(Request $request, Post $post)
+    public function store(StoreCommentRequest $request, Post $post)
     {
-        $request->validate([
-            'temat' => 'required|string',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-        ]);
+        $request->validated();
 
         $user_id = Auth::id();
 
         $commentData = [
-            'temat' => $request->input('temat'),
+            'topic' => $request->input('topic'),
             'user_id' => $user_id,
         ];
 
@@ -49,17 +46,14 @@ class CommentController extends Controller
         return view('posts.comments.edit', compact('comment'));
     }
 
-    public function update(Request $request, Comment $comment)
+    public function update(StoreCommentRequest $request, Comment $comment)
     {
-        $request->validate([
-            'temat' => 'required|string',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-        ]);
+        $request->validated();
 
         $user_id = Auth::id();
 
         $commentData = [
-            'temat' => $request->input('temat'),
+            'topic' => $request->input('topic'),
             'user_id' => $user_id,
         ];
 
@@ -115,7 +109,7 @@ class CommentController extends Controller
 
     public function like(Post $post, Comment $comment): JsonResponse
     {
-        
+
         $user = Auth::user();
 
         try {

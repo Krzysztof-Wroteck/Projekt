@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StorePostRequest;
 use App\Models\Like;
 use App\Models\Post;
 use App\Models\Share;
@@ -26,9 +27,9 @@ class PostController extends Controller
             $posts = Post::where(function ($queryBuilder) use ($hashtags) {
                 foreach ($hashtags as $hashtag) {
                     $queryBuilder->whereHas('user', function ($q) use ($hashtag) {
-                        $q->whereRaw('BINARY name LIKE ?', ['%'.$hashtag.'%']);
+                        $q->where('name', 'like', '%'.$hashtag.'%');
                     })->orWhere(function ($q) use ($hashtag) {
-                        $q->whereRaw('BINARY temat LIKE ?', ['%'.$hashtag.'%']);
+                        $q->where('topic', 'like', '%'.$hashtag.'%');
                     });
                 }
             })
@@ -64,39 +65,36 @@ class PostController extends Controller
         return view('posts.edit', compact('post'));
     }
 
-    public function update(Request $request, Post $post)
+    public function update(StorePostRequest $request, Post $post)
     {
-        $request->validate([
-            'temat' => 'required|string',
-            'image' => 'image|mimes:jpeg,png,jpg,gif|max:2048',
-        ]);
+        $request->validated();
 
-        $post->update([
-            'temat' => $request->input('temat'),
-        ]);
+        $imagePath = null;
 
         if ($request->has('remove_image') && $request->input('remove_image') == true) {
             if ($post->image_path) {
                 Storage::disk('public')->delete($post->image_path);
+                $imagePath = null;
+
             }
             $post->update(['image_path' => null]);
         } elseif ($request->hasFile('image')) {
             if ($post->image_path) {
                 Storage::disk('public')->delete($post->image_path);
+
             }
             $imagePath = $request->file('image')->store('images', 'public');
-            $post->update(['image_path' => $imagePath]);
         }
+        $post->update([
+            'topic' => $request->input('topic'), 'image_path' => $imagePath,
+        ]);
 
         return redirect()->route('users.posts', ['user' => $post->user_id])->with('success', 'Post add.');
     }
 
-    public function store(Request $request)
+    public function store(StorePostRequest $request)
     {
-        $request->validate([
-            'temat' => 'required|string',
-            'image' => 'image|mimes:jpeg,png,jpg,gif,mp4|max:2048',
-        ]);
+        $request->validated();
 
         $user_id = Auth::id();
         $request->merge(['user_id' => $user_id]);
@@ -141,8 +139,6 @@ class PostController extends Controller
     public function sherePost(Post $post): JsonResponse
     {
         $user = Auth::user();
-
-       
 
         $existingShere = $user->sheres()->where('post_id', $post->id)->exists();
 

@@ -10,8 +10,8 @@
             <form action="{{ route('posts.store') }}" method="post" class="max-w-md w-full" enctype="multipart/form-data">
                 @csrf
                 <div class="mb-4">
-                    <label for="temat" class="block text-gray-700 text-sm font-bold mb-2">Temat:</label>
-                    <input type="text" name="temat" class="form-input border rounded-md p-2 w-full h-10" required>
+                    <label for="topic" class="block text-gray-700 text-sm font-bold mb-2">Temat:</label>
+                    <input type="text" name="topic" class="form-input border rounded-md p-2 w-full h-10" required>
                 </div>
 
                 <div class="mb-4">

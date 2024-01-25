@@ -62,7 +62,7 @@
                 @endif
             </div>
         </div> 
-                                <div class="text-gray-700 dark:text-gray-300">{{ $post->temat }}</div>
+                                <div class="text-gray-700 dark:text-gray-300">{{ $post->topic }}</div>
 
                                 @if($post->image_path)
                                     <div class="mt-4">

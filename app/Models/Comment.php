@@ -11,7 +11,7 @@ class Comment extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['temat', 'image_path', 'user_id', 'post_id'];
+    protected $fillable = ['topic', 'image_path', 'user_id', 'post_id'];
 
     public function imageUrl(): string
     {
