@@ -10,6 +10,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Storage;
+use App\Http\Requests\StoreCommentRequest;
 
 class CommentController extends Controller
 {
@@ -18,12 +19,10 @@ class CommentController extends Controller
         return view('posts.comments.index', compact('post'));
     }
 
-    public function store(Request $request, Post $post)
+    public function store(StoreCommentRequest $request, Post $post)
     {
-        $request->validate([
-            'temat' => 'required|string',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-        ]);
+        $request->user()->fill($request->validated());
+
 
         $user_id = Auth::id();
 
@@ -49,12 +48,10 @@ class CommentController extends Controller
         return view('posts.comments.edit', compact('comment'));
     }
 
-    public function update(Request $request, Comment $comment)
+    public function update(StoreCommentRequest $request, Comment $comment)
     {
-        $request->validate([
-            'temat' => 'required|string',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-        ]);
+        $request->user()->fill($request->validated());
+
 
         $user_id = Auth::id();
 

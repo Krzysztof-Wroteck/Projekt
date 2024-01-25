@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\View\View;
+use App\Http\Requests\StorePostRequest;
 
 class PostController extends Controller
 {
@@ -64,12 +65,10 @@ class PostController extends Controller
         return view('posts.edit', compact('post'));
     }
 
-    public function update(Request $request, Post $post)
+    public function update(StorePostRequest $request, Post $post)
     {
-        $request->validate([
-            'temat' => 'required|string',
-            'image' => 'image|mimes:jpeg,png,jpg,gif|max:2048',
-        ]);
+        $request->user()->fill($request->validated());
+
 
         $post->update([
             'temat' => $request->input('temat'),
@@ -91,12 +90,10 @@ class PostController extends Controller
         return redirect()->route('users.posts', ['user' => $post->user_id])->with('success', 'Post add.');
     }
 
-    public function store(Request $request)
+    public function store(StorePostRequest $request)
     {
-        $request->validate([
-            'temat' => 'required|string',
-            'image' => 'image|mimes:jpeg,png,jpg,gif,mp4|max:2048',
-        ]);
+        $request->user()->fill($request->validated());
+
 
         $user_id = Auth::id();
         $request->merge(['user_id' => $user_id]);
