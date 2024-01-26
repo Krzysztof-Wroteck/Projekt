@@ -22,21 +22,12 @@ class CommentTest extends TestCase
 
         $this->actingAs($user);
 
-        $post = Post::create([
-            'topic' => 'aaaa',
-            'user_id' => $user->id,
-        ]);
 
-        Comment::create([
-            'topic' => 'bbbb',
-            'user_id' => $user->id,
-            'post_id' => $post->id,
-        ]
-        );
+        $comment = Comment::factory()->create();
 
-        $response = $this->get("/posts/{$post->id}/comments");
+        $response = $this->get("/posts/{$comment->post_id}/comments");
 
-        $response->assertSee('bbbb');
+        $response->assertSee($comment->topic);
 
         $response->assertStatus(200);
     }

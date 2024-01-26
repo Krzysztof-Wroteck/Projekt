@@ -16,14 +16,11 @@ class PostTest extends TestCase
         $user = User::factory()->create();
         $this->actingAs($user);
 
-        Post::create([
-            'topic' => 'aaaa',
-            'user_id' => $user->id,
-        ]);
+        $post = Post::factory()->create();
 
         $response = $this->get('/posts');
 
-        $response->assertSee('aaaa');
+        $response->assertSee($post->topic);
         $response->assertStatus(200);
     }
 }
