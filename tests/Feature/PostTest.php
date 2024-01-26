@@ -13,11 +13,7 @@ class PostTest extends TestCase
 
     public function test_Post_show()
     {
-        $user = User::create([
-            'name' => 'John Doe',
-            'email' => 'john@example.com',
-            'password' => bcrypt('secret'),
-        ]);
+        $user = User::factory()->create();
         $this->actingAs($user);
 
         Post::create([

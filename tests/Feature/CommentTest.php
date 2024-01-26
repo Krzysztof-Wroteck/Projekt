@@ -18,11 +18,8 @@ class CommentTest extends TestCase
     public function test_Comment_show(): void
     {
 
-        $user = User::create([
-            'name' => 'John Doe',
-            'email' => 'john@example.com',
-            'password' => bcrypt('secret'),
-        ]);
+        $user = User::factory()->create();
+
         $this->actingAs($user);
 
         $post = Post::create([
